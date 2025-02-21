@@ -55,8 +55,7 @@ const SelectorSection = ({ id, title, oldLabelValue, handleDragOver, handleDragS
 
 
     useEffect(() => {
-        if (isExpanded) {
-            console.log(' Title added to selectedComponent:', title)
+        if (isExpanded && title!== 'THEME') {
            dispatch(addSelectedComponent({id,name:title}) )
         }
     }, [isExpanded, title,dispatch,id])
