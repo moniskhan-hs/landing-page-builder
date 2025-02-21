@@ -1,25 +1,21 @@
+/* eslint-disable react/prop-types */
 import { Box, Button, Stack, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import ScheduleComponent from "../ScheduleComponent";
 
-const HeroSection = () => {
+const HeroSection = ({ id,data={} }) => {
+  console.log('herosection id:', id)
   const theme = useTheme();
   const [previewUrl, setPreviewUrl] = useState(null);
   const componentsValue = useSelector((state) => state.universalThemeReducer);
-  const { hero, theme: selectedTheme } = componentsValue;
+  const {theme: selectedTheme } = componentsValue;
+  //  const [herodata.content,setHerodata.content] = useState(data.content)
 
-  useEffect(() => {
-    if (hero.file) {
-      const url = URL.createObjectURL(hero.file);
-      setPreviewUrl(url);
 
-      // Cleanup the object URL when the component unmounts or the file changes
-      return () => URL.revokeObjectURL(url);
-    } else {
-      setPreviewUrl(null);
-    }
-  }, [hero.file]);
+
+
+
   return (
     <Stack
       direction={"row"}
@@ -43,15 +39,16 @@ const HeroSection = () => {
         <Stack direction={"column"} gap={1} mt={5}>
           {/* ---------------------Title-------------------------- */}
           <Typography variant="h2" color={selectedTheme.typography?.titleColor}>
-            {hero?.title || "Title here"}
+            {data?.content?.title || "Title here"}
           </Typography>
+    
 
           {/* ---------------------paragraph-------------------------- */}
           <Typography
             variant="subtitle1"
             color={selectedTheme.typography?.paragraphColor}
           >
-            {hero?.description ||
+            {data?.content?.description ||
               "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt quisquam fugit nam sequi ex iste ratione, quaerat, architecto sit facilis maxime adipisci obcaecati suscipit amet, temporibus iusto accusantium eligendi impedit!"}
           </Typography>
 
@@ -62,10 +59,10 @@ const HeroSection = () => {
               sx={{
                 color: selectedTheme.button?.buttonTextColor,
                 bgcolor: selectedTheme.button?.buttonBackground,
-                fontWeight:"bold"
+                fontWeight: "bold"
               }}
             >
-              {hero?.buttonText || "Click me"}
+              {data?.content?.buttonText || "Click me"}
             </Button>
           </Box>
           {/*    text [optional] */}
@@ -75,17 +72,17 @@ const HeroSection = () => {
             mt={1}
             color={selectedTheme.typography?.paragraphColor}
           >
-            {hero?.infoText || "some info text here..."}
+            {data?.content?.infoText || "some info text here..."}
           </Typography>
 
-<Box sx={{
-    padding:"1rem 1.5rem"
-}}>
+          <Box sx={{
+            padding: "1rem 1.5rem"
+          }}>
 
-{
-    hero.scheduleAdded && <ScheduleComponent iconBackground={selectedTheme.icon?.iconBackground} iconColor={selectedTheme.icon?.iconColor} paperColor={selectedTheme.background?.paper} iconType={selectedTheme.icon?.selectedIconType} />
-}
-    </Box>
+            {
+              data?.content?.scheduleAdded && <ScheduleComponent iconBackground={selectedTheme.icon?.iconBackground} iconColor={selectedTheme.icon?.iconColor} paperColor={selectedTheme.background?.paper} iconType={selectedTheme.icon?.selectedIconType} />
+            }
+          </Box>
 
 
         </Stack>
@@ -101,7 +98,7 @@ const HeroSection = () => {
       >
         {/* ------------------- Image or Embeded-------------------- */}
 
-        {hero.value == "image" ? (
+        {data?.content?.value == "image" ? (
           <img
             src={previewUrl || "/heroImage.jpg"}
             alt="hero-img"
@@ -123,14 +120,14 @@ const HeroSection = () => {
               //  marginBottom: "1rem"
             }}
           >
-            {hero.embededLink ? (
+            {data?.content?.embededLink ? (
               <iframe
                 width="100%"
                 height="100%"
                 style={{
                   borderRadius: "30px",
                 }}
-                src={hero?.embededLink}
+                src={data?.content?.embededLink}
                 title="YouTube video player"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

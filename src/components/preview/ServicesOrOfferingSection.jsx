@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import { Box, Stack, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -33,9 +35,9 @@ const ServiceImage = ({ image }) => {
   );
 };
 
-const ServicesOrOfferingSection = () => {
+const ServicesOrOfferingSection = ({id,data}) => {
   const componentsValue = useSelector((state) => state.universalThemeReducer);
-  const { services, theme: selectedTheme } = componentsValue;
+  const {theme: selectedTheme } = componentsValue;
   const theme = useTheme();
 
   return (
@@ -54,13 +56,13 @@ const ServicesOrOfferingSection = () => {
         color={selectedTheme.typography.subTitleColor}
         mb={4}
       >
-        {services.title || "Your services title"}
+        {data?.title || "Your services title"}
       </Typography>
       {/* ---------------Tile container---------- */}
 
       <Box>
-        {services.list &&
-          services.list.map((ele, index) => (
+        {data?.services &&
+          data?.services?.map((ele, index) => (
             <Stack
               key={index}
               direction={"row"}

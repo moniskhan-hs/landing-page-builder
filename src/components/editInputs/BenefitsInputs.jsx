@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { DeleteOutlineOutlined } from "@mui/icons-material";
 import {
   Box,
@@ -12,79 +13,103 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import ImageUpload from "../ImageUpload";
 import {
-  changeBenefitsList,
-  changeBenefitsTitle,
-  changeOptionalText,
+  changeBenefits,
 } from "../../redux/reducers/universalStyles";
 
-const benefitsInputsData = [
-  {
-    infoText: "some informations text",
-    image: null,
-  },
-];
-
-const BenefitsInputs = () => {
-  const [inputsData, setInputsData] = useState(benefitsInputsData);
-  const [title, setTitle] = useState("");
-  const [optionalText, setOptionalText] = useState("");
+const BenefitsInputs = ({id}) => {
   const dispatch = useDispatch();
   const theme = useTheme();
 
-  const handleChange = (e, index) => {
+  // Combined state for title, optional text, and benefits list
+  const [formData, setFormData] = useState({
+    title: "",
+    optionalText: "",
+    benefits: [
+      {
+        infoText: "some informations text",
+        image: null,
+      },
+    ],
+  });
+
+  // Global change handler for "title" and "optionalText"
+  const handleGlobalChange = (e) => {
     const { name, value } = e.target;
-    setInputsData((prev) =>
-      prev.map((benefit, idx) =>
-        idx === index ? { ...benefit, [name]: value } : benefit
-      )
-    );
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    if (name === "title") {
+      dispatch(changeBenefits({id:id,content:value,type:'title'}));
+    }
+    if (name === "optionalText") {
+      dispatch(changeBenefits({id:id,content:value,type:'optionalText'}));    }
   };
 
-  // Update the image for a specific benefit from file input
-  const handleBenefitImageChange = (e, benefitIndex) => {
+  // Handler for benefit text inputs (e.g., infoText)
+  const handleBenefitChange = (e, index) => {
+    const { name, value } = e.target;
+    setFormData((prev) => {
+      const updatedBenefits = prev.benefits.map((benefit, idx) =>
+        idx === index ? { ...benefit, [name]: value } : benefit
+      );
+      return { ...prev, benefits: updatedBenefits };
+    });
+  };
+
+  // Handler for file upload for a specific benefit
+  const handleBenefitImageChange = (e, index) => {
     const file = e.target.files[0];
     if (file) {
-      setInputsData((prev) =>
-        prev.map((benefit, idx) =>
-          idx === benefitIndex ? { ...benefit, image: file } : benefit
-        )
-      );
+      setFormData((prev) => {
+        const updatedBenefits = prev.benefits.map((benefit, idx) =>
+          idx === index ? { ...benefit, image: file } : benefit
+        );
+        return { ...prev, benefits: updatedBenefits };
+      });
     }
   };
 
-  // Update the image for a specific benefit from drag-and-drop
-  const handlebenefitImageDrop = (e, benefitIndex) => {
+  // Handler for file drop (drag-and-drop) for a specific benefit
+  const handleBenefitImageDrop = (e, index) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
     if (file) {
-      setInputsData((prev) =>
-        prev.map((benefit, idx) =>
-          idx === benefitIndex ? { ...benefit, image: file } : benefit
-        )
-      );
+      setFormData((prev) => {
+        const updatedBenefits = prev.benefits.map((benefit, idx) =>
+          idx === index ? { ...benefit, image: file } : benefit
+        );
+        return { ...prev, benefits: updatedBenefits };
+      });
     }
   };
 
-  // Add a new blank benefit
+  // Add a new blank benefit entry
   const handleAddBenefit = () => {
-    setInputsData((prev) => [
+    setFormData((prev) => ({
       ...prev,
-      {
-        heading: "",
-        description: "",
-        image: null,
-      },
-    ]);
+      benefits: [
+        ...prev.benefits,
+        {
+          infoText: "",
+          image: null,
+        },
+      ],
+    }));
   };
 
-  // Delete a benefit by its index
+  // Delete a benefit entry by its index
   const handleDeleteBenefit = (indexToDelete) => {
-    setInputsData((prev) => prev.filter((_, index) => index !== indexToDelete));
+    setFormData((prev) => ({
+      ...prev,
+      benefits: prev.benefits.filter((_, index) => index !== indexToDelete),
+    }));
   };
 
+  // Dispatch updated benefits list to Redux whenever it changes
   useEffect(() => {
-    dispatch(changeBenefitsList(inputsData));
-  }, [inputsData]);
+    dispatch(changeBenefits({id:id,content:formData.benefits,type:'list'}));
+  }, [dispatch, formData.benefits]);
 
   return (
     <Stack
@@ -100,32 +125,27 @@ const BenefitsInputs = () => {
           placeholder="Enter Title"
           size="small"
           name="title"
-          value={title}
-          onChange={(e) => {
-            setTitle(e.target.value);
-            dispatch(changeBenefitsTitle(e.target.value));
-          }}
+          value={formData.title}
+          onChange={handleGlobalChange}
           fullWidth
         />
       </Box>
 
-      {/* Optional Text  */}
+      {/* Optional Text Field */}
       <Box sx={{ mb: 1 }}>
         <Typography variant="subtitle1">Optional Text</Typography>
         <TextField
           placeholder="Enter Optional text"
           size="small"
-          name="title"
-          value={optionalText}
-          onChange={(e) => {
-            setOptionalText(e.target.value);
-            dispatch(changeOptionalText(e.target.value));
-          }}
+          name="optionalText"
+          value={formData.optionalText}
+          onChange={handleGlobalChange}
           fullWidth
         />
       </Box>
 
-      {inputsData.map((benefit, index) => (
+      {/* Map through the benefits list */}
+      {formData.benefits.map((benefit, index) => (
         <Box
           key={"benefit" + index}
           sx={{
@@ -135,23 +155,11 @@ const BenefitsInputs = () => {
             mb: 2,
           }}
         >
-          {/* Delete button */}
-          <Stack
-            direction="row"
-            sx={{
-              display: "flex",
-              width: "100%",
-            }}
-          >
-            <Typography
-              variant="subtitle1"
-              sx={{
-                marginRight: "auto",
-              }}
-            >
-              benefit {index + 1}{" "}
+          {/* Header with Delete Button */}
+          <Stack direction="row" sx={{ display: "flex", width: "100%" }}>
+            <Typography variant="subtitle1" sx={{ marginRight: "auto" }}>
+              Benefit {index + 1}
             </Typography>
-
             <IconButton onClick={() => handleDeleteBenefit(index)}>
               <DeleteOutlineOutlined sx={{ color: "red" }} />
             </IconButton>
@@ -165,7 +173,7 @@ const BenefitsInputs = () => {
               size="small"
               name="infoText"
               value={benefit.infoText}
-              onChange={(e) => handleChange(e, index)}
+              onChange={(e) => handleBenefitChange(e, index)}
               fullWidth
             />
           </Box>
@@ -176,7 +184,7 @@ const BenefitsInputs = () => {
             <ImageUpload
               file={benefit.image}
               hanldeFileUpload={(e) => handleBenefitImageChange(e, index)}
-              handleFileDrop={(e) => handlebenefitImageDrop(e, index)}
+              handleFileDrop={(e) => handleBenefitImageDrop(e, index)}
             />
             {benefit.image && (
               <Typography
@@ -194,6 +202,7 @@ const BenefitsInputs = () => {
         </Box>
       ))}
 
+      {/* Button to add a new benefit */}
       <Button
         onClick={handleAddBenefit}
         sx={{

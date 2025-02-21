@@ -1,175 +1,235 @@
+/* eslint-disable react/prop-types */
 import { Box, Checkbox, FormControl, FormControlLabel, Radio, RadioGroup, Stack, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import useSetComponentStyles from "../../hooks/useSetComponentStyles";
+import { useDispatch } from "react-redux";
 import { changeHero } from "../../redux/reducers/universalStyles";
-import { websiteHeroStyles } from "../../styles/component/websiteTheme";
 import ImageUpload from "../ImageUpload";
 
-const HeroInputs = () => {
-    const [file, setFile] = useState(null) // Image
-    console.log('file:', file)
-    const [value, setValue] = useState('image');   // toggle between image or embeded link
-    const [title, setTitle] = useState('')
+const HeroInputs = ({ id,title }) => {
     console.log('title:', title)
-    const [description, setDescription] = useState('')
-    const [buttonText, setButtonText] = useState('')
-    const [infoText, setInfoText] = useState('')
-    const [embededLink, setEmbededLink] = useState('')
-    console.log('value:', value)
-    const [scheduleAdded, setScheduleAdded] = useState(false)
+    const [formData, setFormData] = useState({
+        file: null,          // Image file
+        value: "image",      // Toggle between image or embedded link
+        title: "",
+        description: "",
+        buttonText: "",
+        infoText: "",
+        embededLink: "",
+        scheduleAdded: false,
+      });
+    
+const dispatch = useDispatch()
 
-    const heroUpdates = {
-        embededLink,
-        infoText,
-        buttonText,
-        description,
-        title,
-        value,
-        file,
-        scheduleAdded
-    }
+      // Generic onChange handler for text, select, checkbox, and file inputs
+      const handleChange = (e) => {
+        const { name, type, value, checked, files } = e.target;
+        
+        if (type === "file") {
+          // For file inputs, use the first file from the FileList
+          setFormData((prevData) => ({
+            ...prevData,
+            [name]: files[0],
+          }));
+        } else if (type === "checkbox") {
+          // For checkboxes, use the checked value
+          setFormData((prevData) => ({
+            ...prevData,
+            [name]: checked,
+          }));
+        } else {
+          // For other input types, use the input's value
+          setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+          }));
+        }
 
-    useSetComponentStyles({ updates: heroUpdates, targetedComponent: 'title', setHandler: changeHero });
-    console.log('websiteHeroStyles:', websiteHeroStyles)
+        
+        
+        
+    };
+    
+    useEffect(()=>{
+          dispatch(changeHero({id:id, content:formData}));
+      },[formData,dispatch])
+
+// useSetComponentStyles({ updates: heroUpdates, setHandler: changeHero, id: id });
 
 
 
     //   ------------------------------- H A N D L E R S ----------------------------------
-    const handleFileUpload = (e) => {
-        const selectedFile = e.target.files[0];
-        if (selectedFile) {
-            setFile(selectedFile);
-        }
-    };
+    
+  // File upload handler (for input type="file")
+  const handleFileUpload = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFormData((prevData) => ({
+        ...prevData,
+        file: selectedFile,
+      }));
+    }
+  };
 
-    const handleFileDrop = (event) => {
-        event.preventDefault();
-        const droppedFile = event.dataTransfer.files[0]; // Extract only one file
-        if (droppedFile) {
-            setFile(droppedFile);
-        }
-    };
+  // File drop handler (for drag and drop)
+  const handleFileDrop = (event) => {
+    event.preventDefault();
+    const droppedFile = event.dataTransfer.files[0];
+    if (droppedFile) {
+      setFormData((prevData) => ({
+        ...prevData,
+        file: droppedFile,
+      }));
+    }
+  };
 
-    const handleChange = (event) => {
-        setValue((event.target).value);
-    };
 
+
+ 
     // ----------------------------------- Toggle the values between the image and link values -----------------------------------------
     useEffect(() => {
-
-        if (value == 'image') {
-            setEmbededLink('')
+        if (formData.value == 'image') {
+            setFormData({...formData, embededLink:''})
         }
 
-        if (value == 'link') {
-            setFile(null)
+        if (formData.value == 'link') {
+            setFormData({...formData, file:''})
         }
-    }, [value])
+    }, [formData.value])
 
 
     return (
-        <Stack gap={1} sx={{
+        <Stack
+          gap={1}
+          sx={{
             padding: "0.5rem 0.5rem",
-            '.MuiBox-root': {
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 1,
-
-            }
-        }}>
-            {/* title */}
+            ".MuiBox-root": {
+              display: "flex",
+              flexDirection: "column",
+              gap: 1,
+            },
+          }}
+        >
+          {/* Title */}
+          <Box>
+            <Typography variant="subtitle2">Title</Typography>
+            <TextField
+              name="title"
+              placeholder="Enter Title"
+              size="small"
+              value={formData.title}
+              onChange={handleChange}
+            />
+          </Box>
+      
+          {/* Description */}
+          <Box>
+            <Typography variant="subtitle2">Description</Typography>
+            <textarea
+              name="description"
+              placeholder="Enter Description"
+              value={formData.description}
+              onChange={handleChange}
+              style={{
+                background: "transparent",
+                borderRadius: "8px",
+                padding: "0.5rem 0.6rem",
+                fontSize: "1rem",
+              }}
+            />
+          </Box>
+      
+          {/* Button Text */}
+          <Box>
+            <Typography variant="subtitle2">Button Text</Typography>
+            <TextField
+              name="buttonText"
+              placeholder="Enter Button Text"
+              size="small"
+              value={formData.buttonText}
+              onChange={handleChange}
+            />
+          </Box>
+      
+          {/* Info Text */}
+          <Box>
+            <Typography variant="subtitle2">Info Text</Typography>
+            <TextField
+              name="infoText"
+              placeholder="Enter Text"
+              size="small"
+              value={formData.infoText}
+              onChange={handleChange}
+            />
+          </Box>
+      
+          {/* Radio Group: Choose between Image and Embeded Link */}
+          <Box>
+            <FormControl>
+              <Typography variant="subtitle2">To Add</Typography>
+              <RadioGroup
+                name="value"
+                value={formData.value}
+                onChange={handleChange}
+                row
+              >
+                <FormControlLabel
+                  value="image"
+                  control={<Radio />}
+                  label="Image"
+                />
+                <FormControlLabel
+                  value="link"
+                  control={<Radio />}
+                  label="Embeded Link"
+                />
+              </RadioGroup>
+            </FormControl>
+          </Box>
+      
+          {/* Conditionally render image upload or embeded link input */}
+          {formData.value === "image" ? (
+            // Image Upload
             <Box>
-                <Typography variant="subtitle2">
-                    Title
-                </Typography>
-                <TextField placeholder="Enter Title" size="small" value={title} onChange={(e) => setTitle(e.target.value)} />
+              <Typography variant="subtitle2">Add Image</Typography>
+              <ImageUpload
+                file={formData.file}
+                handleFileDrop={handleFileDrop}
+                handleFileUpload={handleFileUpload}
+              />
             </Box>
-            {/* discripton */}
+          ) : (
+            // Embeded Video Input
             <Box>
-                <Typography variant="subtitle2">
-                    Description
-                </Typography>
-                <textarea placeholder="Enter Description" value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-
-                    style={{
-                        background: "transparent",
-                        borderRadius: "8px",
-                        padding: "0.5rem 0.6rem",
-                        fontSize: '1rem'
-                    }} />
+              <Typography variant="subtitle2">Add Embeded Link</Typography>
+              <TextField
+                name="embededLink"
+                placeholder="Embeded Video Link"
+                size="small"
+                value={formData.embededLink}
+                onChange={handleChange}
+              />
             </Box>
-            {/* button text */}
-            <Box>
-                <Typography variant="subtitle2">
-                    Button Text
-                </Typography>
-                <TextField placeholder="Enter Button Text" size="small" value={buttonText} onChange={(e => setButtonText(e.target.value))} />
-            </Box>
-            {/* optional below button text */}
-            <Box>
-                <Typography variant="subtitle2">
-                    Info Text
-                </Typography>
-                <TextField placeholder="Enter Text" size="small" value={infoText} onChange={(e) => setInfoText(e.target.value)} />
-            </Box>
-            {/* image  */}
-            <Box>
-                <FormControl>
-                    <Typography variant="subtitle2" >To Add</Typography>
-                    <RadioGroup
-                        name="controlled-radio-buttons-group"
-                        value={value}
-                        onChange={handleChange}
-                        row                    >
-
-
-                        <FormControlLabel value="image" control={<Radio />} label="Image" />
-                        <FormControlLabel value="link" control={<Radio />} label="Embeded Link" />
-
-                    </RadioGroup>
-                </FormControl>
-            </Box>
-
-            {value === 'image' ? (
-
-                // image upload 
-
-                <Box >
-
-
-                    <Typography variant="subtitle2">
-                        Add Image
-                    </Typography>
-
-                    <ImageUpload file={file} handleFileDrop={handleFileDrop} hanldeFileUpload={handleFileUpload} />
-                </Box>) : (
-                // embeded video 
-
-                <Box >
-                    <Typography variant="subtitle2">
-                        Add Embeded Link
-                    </Typography>
-
-                    <TextField placeholder="Embeded Video Link" size="small" value={embededLink} onChange={(e) => setEmbededLink(e.target.value)} />
-                </Box>)
-
-            }
-
-
-            <Box>
-                <Typography variant="subtitle2">
-                    Schedule
-                </Typography>
-                <FormControlLabel required control={<Checkbox
-                    checked={scheduleAdded}
-                    onChange={(e) => setScheduleAdded(e.target.checked)}
-                    inputProps={{ 'aria-label': 'controlled' }}
-                />} label="Add schedule in my website" />
-
-            </Box>
+          )}
+      
+          {/* Schedule Checkbox */}
+          <Box>
+            <Typography variant="subtitle2">Schedule</Typography>
+            <FormControlLabel
+              required
+              control={
+                <Checkbox
+                  name="scheduleAdded"
+                  checked={formData.scheduleAdded}
+                  onChange={handleChange}
+                  inputProps={{ "aria-label": "controlled" }}
+                />
+              }
+              label="Add schedule in my website"
+            />
+          </Box>
         </Stack>
-    );
+      );
+      
 };
 
 export default HeroInputs;

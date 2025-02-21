@@ -5,7 +5,6 @@ import PreviewContainer from "../components/PreviewContainer";
 import SelectorSection from "../components/SelectorSection";
 import SharableContentbar from "../components/SharableContentbar";
 import { changeInSectionState } from "../redux/reducers/sectionsState";
-import CustColorPicker from "../components/CustColorPicker";
 
 const PlayGround = () => {
   const theme = useTheme();
@@ -14,6 +13,8 @@ const PlayGround = () => {
 
   const [selectedComponents, setSelectedComponents] = useState([]);
   const dispatch = useDispatch()
+  const [isFullPreviewed,setIsFullPreviewed] = useState(false)
+
 
   useEffect(() => {
     const updatedSelected = menuItemsState.filter((ele) => ele.isSelected);
@@ -105,7 +106,7 @@ const PlayGround = () => {
             </Stack>
           ) : (
             selectedComponents.map((ele, index) => (
-              <SelectorSection key={index} oldLabelValue={ele.label} id={ele.id} title={ele.title} handleDragOver={handleDragOver} handleDragStart={handleDragStart} handleDrop={handleDrop} isDragged={true} index={index} />
+              <SelectorSection key={index} oldLabelValue={ele.label} id={ele.id} title={ele.title} handleDragOver={handleDragOver} handleDragStart={handleDragStart} handleDrop={handleDrop} isDragged={true} index={index} isFullPreviewed={isFullPreviewed}/>
             ))
           )}
 
@@ -156,10 +157,10 @@ const PlayGround = () => {
           }}
         >
           {/* ---------------------------------- Copy and Share bar----------------------------- */}
-          <SharableContentbar />
+          <SharableContentbar  hanldeFullPreviewed ={()=> setIsFullPreviewed((pre)=>!pre)}  isFullPreviewed ={isFullPreviewed}/>
           {/* ---------------------------------- In Preview Component------------------------------------- */}
 
-          <PreviewContainer />
+          <PreviewContainer isFullPreviewed ={isFullPreviewed} />
         </Stack>
       </Box>
     </div>

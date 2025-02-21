@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { changeHero } from '../redux/reducers/universalStyles';
 
-const useSetComponentStyles = ({ updates,setHandler }) => {
-  console.log('updates in services:', updates)
+const useSetComponentStyles = ({ updates,setHandler,id }) => {
+  console.log('updates in set component styles:', updates)
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -21,9 +20,9 @@ const useSetComponentStyles = ({ updates,setHandler }) => {
     }, {});
 
     if (Object.keys(validUpdates).length > 0) {
-      dispatch(setHandler(validUpdates));
+      dispatch(setHandler({id:id, content:validUpdates}));
     }
-  }, [updates, dispatch,setHandler]);
+  }, [updates, dispatch,setHandler,id]);
 };
 
 export default useSetComponentStyles;

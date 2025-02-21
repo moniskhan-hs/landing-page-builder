@@ -1,111 +1,108 @@
 import { typography } from "@mui/system";
 import { createSlice } from "@reduxjs/toolkit";
 
-
 const initialState = {
-
-    // directly replace the theme with the object of theme of themeinputs.jsx file
-    theme: {
-
-        typography: {
-            titleColor: '',
-            subTitleColor: '',
-            headingColor: '',
-            paragraphColor: '',
-        },
-        button: {
-            buttonTextColor: '',
-            buttonBackground: ''
-
-        },
-        background: {
-            default: '',
-            paper: '',
-            section: ''
-        },
-        icon: {
-            iconColor: '',
-            iconBackground: '',
-            selectedIconType: ''
-        }
-
-
+  // directly replace the theme with the object of theme of themeinputs.jsx file
+  theme: {
+    typography: {
+      titleColor: "",
+      subTitleColor: "",
+      headingColor: "",
+      paragraphColor: "",
     },
-
-    hero: {
-        buttonText: "",
-        description: "",
-        embededLink: "",
-        file: null,
-        infoText: "",
-        title: "",
-        value:"image",
-        scheduleAdded:false
+    button: {
+      buttonTextColor: "",
+      buttonBackground: "",
     },
-
-    services:{
-        title:'Services you are offering',
-        list: [
-            {
-                heading: "some heading",
-                description:"Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex sequi veniam nemo corporis maxime! Labore nesciunt adipisci perferendis, sed rem nemo dicta earum, sint, provident explicabo quo sunt eius eligendi.",
-                image: null,
-              },
-        ]
+    background: {
+      default: "",
+      paper: "",
+      section: "",
     },
-    benefits:{
-        title:'Benefits title',
-        optionalText:'optionalText',
-        list: [
-            {
-                infoText:'some informations text Lorem ipsum dolor sit amet consectetur',
-                image: null,
-              },
-        ]
-    }
-    
-    
-   
-}
+    icon: {
+      iconColor: "",
+      iconBackground: "",
+      selectedIconType: "",
+    },
+  },
+
+  hero: [],
+
+  services: [],
+
+  benefits: []
+};
 
 export const universalThemeReducer = createSlice({
-    name: 'universalThemeReducer',
-    initialState,
-    reducers: {
-        changeTheme : (state,action) =>{
-          const { componentName, data } = action.payload;
-          console.log('componentName:', componentName)
-          state.theme[componentName] = data;
-        },
-        changeHero: (state, action) => {
-            const data= action.payload;
-            state.hero= data;
-          },
-        changeServicesList: (state, action) => {
-            const data = action.payload
-            state.services.list= data;
-          },
-          changeServicesTitle : (state,action)=>{
-            const title = action.payload
-            state.services.title= title;
-          },
-        changeBenefitsList: (state, action) => {
-            const data = action.payload
-            state.benefits.list= data;
-          },
-          changeBenefitsTitle : (state,action)=>{
-            const title = action.payload
-            state.benefits.title= title;
-          },
-          changeOptionalText : (state,action)=>{
-            const title = action.payload
-            state.benefits.optionalText= title;
-          }
+  name: "universalThemeReducer",
+  initialState,
+  reducers: {
+    changeTheme: (state, action) => {
+      const { componentName, data } = action.payload;
+      console.log("componentName:", componentName);
+      state.theme[componentName] = data;
+    },
+
+    addHero: (state, action) => {
+      state.hero.push(action.payload);
+    },
+    removeHero: (state, action) => {
+      const id = action.payload;
+      state.hero = state.hero.filter((ele) => ele.id !== id);
+    },
+
+    changeHero: (state, action) => {
+      const { id, content } = action.payload;
+      const component = state.hero.find((ele) => ele.id === id);
+
+      if (component) {
+        component.content = content;
+      }
+    },
+
+    
+    addService: (state, action) => {
+      state.services.push(action.payload);
+    },
+    changeServices: (state, action) => {
+      const { id, content, type } = action.payload;
+      const component = state.services.find((ele) => ele.id === id);
+      if(component) component[type] = content;
+    },
+
+    removeService: (state, action) => {
+      const id = action.payload;
+      state.services = state.services.filter((ele) => ele.id !== id);
+    },
+
+    addBenefit: (state, action) => {
+      state.benefits.push(action.payload);
+    },
+
+    changeBenefits: (state, action) => {
+      const {id,content,type} = action.payload;
+      const component = state.benefits.find((ele) => ele.id === id);
+      if(component) component[type] = content;
+    },
 
 
+    removeBenefit: (state, action) => {
+      const id = action.payload;
+      state.benefits = state.benefits.filter((ele) => ele.id !== id);
+    },
 
-    }
+  },
 });
 
-export const { changeOptionalText,changeBenefitsTitle,changeBenefitsList,changeHero ,changeTheme,changeServicesTitle,changeServicesList} = universalThemeReducer.actions
-
+export const {
+  changeTheme,
+  addHero,
+  changeHero,
+  removeHero,
+  addService,
+  changeServices,
+  removeService,
+  addBenefit,
+  changeBenefits,
+  removeBenefit,
+} = universalThemeReducer.actions;

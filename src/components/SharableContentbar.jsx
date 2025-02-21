@@ -1,6 +1,7 @@
+/* eslint-disable react/prop-types */
 import { Button, Stack, useTheme } from '@mui/material'
 
-const SharableContentbar = () => {
+const SharableContentbar = ({hanldeFullPreviewed,isFullPreviewed}) => {
     const theme = useTheme()
   return (
     <Stack direction={'row'}
@@ -31,6 +32,14 @@ const SharableContentbar = () => {
             color:'#ffffff'
             
         }} >Share URL </Button>
+        <Button variant='outlined' sx={{
+            backgroundColor:'',
+            // borderRadius:"8px",
+            padding:"0.4rem  2rem",
+            bgcolor:theme.palette.warning.light,
+            color:'#ffffff'
+            
+        }} onClick={hanldeFullPreviewed} >{!isFullPreviewed ? "See Full Preview":"Hide"}</Button>
    
       </Stack>
 

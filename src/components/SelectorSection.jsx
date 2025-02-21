@@ -1,20 +1,20 @@
 /* eslint-disable react/prop-types */
 import { Check, DragIndicator, Edit, OpenInFull, Remove } from '@mui/icons-material';
 import { Box, IconButton, Stack, TextField, Typography, useTheme } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from 'react-redux';
 import { addLabel, removeComponent } from '../redux/reducers/addMultiComponenet';
 import { componentsInputs } from '../utils/constants';
 import HeroInputs from './editInputs/HeroInputs';
+import { removeBenefit, removeHero, removeService } from '../redux/reducers/universalStyles';
+import { addSelectedComponent } from '../redux/reducers/selectedComponent';
 
-const SelectorSection = ({ id, title, oldLabelValue, handleDragOver, handleDragStart, handleDrop, isDragged, index }) => {
+const SelectorSection = ({ id, title, oldLabelValue, handleDragOver, handleDragStart, handleDrop, isDragged, index,isFullPreviewed }) => {
     const [isExpanded, setIsExpanded] = useState(false)
     const [addLableIsActive, setAddLableIsActive] = useState(true)
     const [labelValue, setLabelValue] = useState(oldLabelValue || '')
     const theme = useTheme()
     const dispatch = useDispatch()
-
-
 
     const handleToAddLabel = () => {
         // -------------- Need to persist the  lable of associated component
@@ -23,11 +23,48 @@ const SelectorSection = ({ id, title, oldLabelValue, handleDragOver, handleDragS
 
     }
 
+    const hanldeRemove = (id) => {
+        console.log('deleted id------------------------------------------:', id)
+        dispatch(removeComponent(id))
+        switch (title) {
+            case 'HERO':
+                dispatch(removeHero(id))
+
+                break;
+            case 'SERVICES':
+                dispatch(removeService(id))
+
+                break;
+            case 'BENEFITS':
+                dispatch(removeBenefit(id))
+
+                break;
+
+            default:
+                dispatch(removeComponent(id))
+                break;
+        }
+
+    }
+
+    useEffect(() => {
+        if (isExpanded) console.log('This component is selected', id, title)
+    }, [isExpanded, id, title])
+
+
+
+
+    useEffect(() => {
+        if (isExpanded) {
+            console.log(' Title added to selectedComponent:', title)
+           dispatch(addSelectedComponent({id,name:title}) )
+        }
+    }, [isExpanded, title,dispatch,id])
 
     return (
         <Stack direction={'row'} sx={{
             gap: "0.2rem",
-            my:1
+            my: 1
         }}>
             <Box sx={{
                 flex: 1,
@@ -84,14 +121,14 @@ const SelectorSection = ({ id, title, oldLabelValue, handleDragOver, handleDragS
                             }}
                         >{title}</Typography>
                         {
-                            title !== 'THEME'? (<Typography
+                            title !== 'THEME' ? (<Typography
                                 mx={1}
 
-                            >/</Typography>):(<Typography
-                            variant='subtitle1'
-                            mx={1}
+                            >/</Typography>) : (<Typography
+                                variant='subtitle1'
+                                mx={1}
 
-                        >Customize your theme</Typography>)
+                            >Customize your theme</Typography>)
                         }
 
 
@@ -177,7 +214,14 @@ const SelectorSection = ({ id, title, oldLabelValue, handleDragOver, handleDragS
                         sx={{
                             color: theme.palette.primary.main,
                         }}
-                        onClick={() => setIsExpanded(pre => !pre)}
+                        onClick={
+
+                            () => 
+
+                                setIsExpanded(pre => !pre)
+
+                            
+                        }
                     >
                         <OpenInFull />
                     </IconButton>
@@ -189,15 +233,13 @@ const SelectorSection = ({ id, title, oldLabelValue, handleDragOver, handleDragS
                 <Box sx={{
                     overflowY: 'auto'
                 }}>
- {componentsInputs.map((ele,index)=>{
-const Component = ele[title]
-return Component ? <Component key={index}/>:null
+                    {componentsInputs.map((ele, index) => {
+                        const Component = ele[title]
+                        return Component ? <Component key={index} id={id} title={title} /> : null
+                    }
 
- }
+                    )}
 
-)}
-
-                    {/* {title === 'HERO' ? <HeroInputs /> : "some other componets"} */}
                 </Box>
 
 
@@ -238,7 +280,7 @@ return Component ? <Component key={index}/>:null
                     position: 'sticky',
                     bgcolor: theme.palette.error.main
                 }}
-                    onClick={() => dispatch(removeComponent(id))}
+                    onClick={() => hanldeRemove(id)}
                 >
                     <Remove sx={{
                         color: theme.palette.primary.contrastText,
