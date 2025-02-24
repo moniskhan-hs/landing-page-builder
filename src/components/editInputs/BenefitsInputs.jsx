@@ -10,106 +10,91 @@ import {
   useTheme,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ImageUpload from "../ImageUpload";
 import {
+  addBenefitsItem,
   changeBenefits,
+  changeBenefitsList,
+  removeBenefitItem,
 } from "../../redux/reducers/universalStyles";
 
 const BenefitsInputs = ({id}) => {
   const dispatch = useDispatch();
   const theme = useTheme();
 
-  // Combined state for title, optional text, and benefits list
-  const [formData, setFormData] = useState({
-    title: "",
-    optionalText: "",
-    benefits: [
-      {
-        infoText: "some informations text",
-        image: null,
-      },
-    ],
-  });
+  // Get the service component from Redux by id
+  const benefitsState = useSelector((state) => state.universalThemeReducer.benefits);
+  const selectedBenefits = benefitsState.find((ele) => ele.id == id);
 
-  // Global change handler for "title" and "optionalText"
-  const handleGlobalChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    if (name === "title") {
-      dispatch(changeBenefits({id:id,content:value,type:'title'}));
-    }
-    if (name === "optionalText") {
-      dispatch(changeBenefits({id:id,content:value,type:'optionalText'}));    }
+  if(!selectedBenefits){
+      return (
+          <Typography variant="h6" color="error">
+            Benfits component not found for id: {id}
+          </Typography>
+        );
+  }
+
+  const { content } = selectedBenefits; // content contains title and services array
+
+ const handleTitleChange = (e) => {
+    dispatch(
+      changeBenefits({ id, content: e.target.value, type: "title" })
+    );
   };
 
-  // Handler for benefit text inputs (e.g., infoText)
-  const handleBenefitChange = (e, index) => {
-    const { name, value } = e.target;
-    setFormData((prev) => {
-      const updatedBenefits = prev.benefits.map((benefit, idx) =>
-        idx === index ? { ...benefit, [name]: value } : benefit
-      );
-      return { ...prev, benefits: updatedBenefits };
-    });
+ const handleOptionalTextChange = (e) => {
+    dispatch(
+      changeBenefits({ id, content: e.target.value, type: "optionalText" })
+    );
   };
 
-  // Handler for file upload for a specific benefit
-  const handleBenefitImageChange = (e, index) => {
+
+
+  // --- Handlers for Service Item Fields ---
+  const handleBenefitFieldChange = (e, index, field) => {
+    dispatch(
+      changeBenefitsList({ id, index, content: e.target.value, field })
+    );
+  };
+
+  const handleBenefitsImageChange = (e, index) => {
     const file = e.target.files[0];
     if (file) {
-      setFormData((prev) => {
-        const updatedBenefits = prev.benefits.map((benefit, idx) =>
-          idx === index ? { ...benefit, image: file } : benefit
-        );
-        return { ...prev, benefits: updatedBenefits };
-      });
+      dispatch(
+        changeBenefitsList({ id, index, content: file, field: "image" })
+      );
     }
   };
 
-  // Handler for file drop (drag-and-drop) for a specific benefit
-  const handleBenefitImageDrop = (e, index) => {
+  const handleBenefitsImageDrop = (e, index) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
     if (file) {
-      setFormData((prev) => {
-        const updatedBenefits = prev.benefits.map((benefit, idx) =>
-          idx === index ? { ...benefit, image: file } : benefit
-        );
-        return { ...prev, benefits: updatedBenefits };
-      });
+      dispatch(
+        changeBenefitsList({ id, index, content: file, field: "image" })
+      );
     }
   };
 
+
+
   // Add a new blank benefit entry
   const handleAddBenefit = () => {
-    setFormData((prev) => ({
-      ...prev,
-      benefits: [
-        ...prev.benefits,
-        {
-          infoText: "",
-          image: null,
-        },
-      ],
-    }));
+    console.log('add benfit clicked')
+   dispatch(
+       addBenefitsItem({
+         id,
+         benefit: { infoText: "", image: null },
+       })
+     );
   };
 
   // Delete a benefit entry by its index
-  const handleDeleteBenefit = (indexToDelete) => {
-    setFormData((prev) => ({
-      ...prev,
-      benefits: prev.benefits.filter((_, index) => index !== indexToDelete),
-    }));
+  const handleDeleteBenefit = (index) => {
+  dispatch(removeBenefitItem({ id, index }));
   };
 
-  // Dispatch updated benefits list to Redux whenever it changes
-  useEffect(() => {
-    dispatch(changeBenefits({id:id,content:formData.benefits,type:'list'}));
-  }, [dispatch, formData.benefits]);
 
   return (
     <Stack
@@ -125,8 +110,8 @@ const BenefitsInputs = ({id}) => {
           placeholder="Enter Title"
           size="small"
           name="title"
-          value={formData.title}
-          onChange={handleGlobalChange}
+          value={content.title}
+          onChange={handleTitleChange}
           fullWidth
         />
       </Box>
@@ -138,16 +123,16 @@ const BenefitsInputs = ({id}) => {
           placeholder="Enter Optional text"
           size="small"
           name="optionalText"
-          value={formData.optionalText}
-          onChange={handleGlobalChange}
+          value={content.optionalText}
+          onChange={handleOptionalTextChange}
           fullWidth
         />
       </Box>
 
       {/* Map through the benefits list */}
-      {formData.benefits.map((benefit, index) => (
+      {content.benefits.map((benefit, index) => (
         <Box
-          key={"benefit" + index}
+          key={ benefit.id || index}
           sx={{
             bgcolor: theme.palette.background.paper,
             padding: "0.5rem",
@@ -173,7 +158,7 @@ const BenefitsInputs = ({id}) => {
               size="small"
               name="infoText"
               value={benefit.infoText}
-              onChange={(e) => handleBenefitChange(e, index)}
+              onChange={(e) => handleBenefitFieldChange(e, index,"infoText")}
               fullWidth
             />
           </Box>
@@ -183,8 +168,8 @@ const BenefitsInputs = ({id}) => {
             <Typography variant="subtitle1">Image</Typography>
             <ImageUpload
               file={benefit.image}
-              hanldeFileUpload={(e) => handleBenefitImageChange(e, index)}
-              handleFileDrop={(e) => handleBenefitImageDrop(e, index)}
+              handleFileDrop={(e) => handleBenefitsImageDrop(e, index)}
+              hanldeFileUpload={(e) => handleBenefitsImageChange(e, index)}
             />
             {benefit.image && (
               <Typography

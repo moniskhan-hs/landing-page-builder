@@ -36,6 +36,7 @@ const ServiceImage = ({ image }) => {
 };
 
 const ServicesOrOfferingSection = ({id,data}) => {
+  console.log('data in services and offering:', data)
   const componentsValue = useSelector((state) => state.universalThemeReducer);
   const {theme: selectedTheme } = componentsValue;
   const theme = useTheme();
@@ -56,13 +57,13 @@ const ServicesOrOfferingSection = ({id,data}) => {
         color={selectedTheme.typography.subTitleColor}
         mb={4}
       >
-        {data?.title || "Your services title"}
+        {data?.content?.title || "Your services title"}
       </Typography>
       {/* ---------------Tile container---------- */}
 
       <Box>
-        {data?.services &&
-          data?.services?.map((ele, index) => (
+        {data?.content &&
+          data?.content?.services?.map((ele, index) => (
             <Stack
               key={index}
               direction={"row"}

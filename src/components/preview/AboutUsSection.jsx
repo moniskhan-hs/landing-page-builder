@@ -1,47 +1,76 @@
-import { useTheme } from '@emotion/react'
-import { Box, Stack, Typography } from '@mui/material'
-import React from 'react'
+/* eslint-disable react/prop-types */
+import { useTheme } from '@emotion/react';
+import { Stack, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
-const AboutUsSection = () => {
+
+
+
+const AboutImage = ({ image }) => {
+  const [previewUrl, setPreviewUrl] = useState(null);
+
+  useEffect(() => {
+    // If image is a File instance, create an object URL
+    if (image && image instanceof File) {
+      const url = URL.createObjectURL(image);
+      setPreviewUrl(url);
+
+      // Cleanup: revoke the URL on unmount or if image changes
+      return () => URL.revokeObjectURL(url);
+    } else {
+      // If image is a URL or null, use it directly
+      setPreviewUrl(image);
+    }
+  }, [image]);
+
+  return (
+    <img
+      src={previewUrl || "/heroImage.jpg"}
+      alt="services-img"
+      style={{
+        width: "30rem",
+        // height: "100%",
+        aspectRatio:"1",
+        objectFit: "fill",
+        borderRadius:"12px"
+      }}
+    />
+  );
+};
+
+
+const AboutUsSection = ({id,data}) => {
+  const componentsValue = useSelector((state) => state.universalThemeReducer);
+  const {theme: selectedTheme } = componentsValue;
   const theme = useTheme()
 
-  const aboutus = [
-    {
-      image: '/userImage.jpg',
-      heading: 'Some heading',
-      description: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ab fugiat, ratione et doloremque ad mollitia inventore sunt saepe, voluptas consequuntur omnis, dolor ea unde dolorum molestias praesentium cum magni veniam.'
-    },
-    {
-      image: '/userImage.jpg',
-      heading: 'Some heading',
-      description: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ab fugiat, ratione et doloremque ad mollitia inventore sunt saepe, voluptas consequuntur omnis, dolor ea unde dolorum molestias praesentium cum magni veniam.'
-    },
-
-
-  ]
 
   return (
     <Stack
       sx={{
         width: "100vw",
         padding: "3rem 10rem",
-        bgcolor: theme.palette.background.section,
+        bgcolor:
+        selectedTheme.background.section || theme.palette.background.section,
+  
       }}
     >
       <Typography
         variant="h3"
         mb={7}
+        color={selectedTheme.typography.subTitleColor}
         sx={{
           mx: "auto",
         }}
       >
-        Some Title
+       { data?.content?.title || 'Some Title'}
       </Typography>
 
       {/* -----------------------------------main content----------------------------------------- */}
       <Stack 
         sx={
-          aboutus.length ==1?{
+          data?.content?.abouts?.length ==1?{
             display: 'flex',
             justifyContent: "center"
           }:
@@ -61,23 +90,18 @@ const AboutUsSection = () => {
         {
 
 
-          aboutus.map((ele, index) =>
+          data?.content?.abouts?.map((ele, index) =>
             <Stack key={index}>
               {/* ------------------------------------------- image-------------------------------- */}
               <Stack variant='center' width={'100%'}>
-                <img src={ele.image} alt='about-img' style={{
-                  height: "15rem",
-                  objectFit: 'contain',
-                  mx: "auto",
-                  borderRadius: "12px"
-                }} />
+              <AboutImage image={ele.image} />
               </Stack>
 
               {/* -------------------------------- Heading + description----------------------------------------- */}
 
               <Stack textAlign={'center'} gap={1} mt={3}>
-                <Typography variant='h4'>{ele.heading}</Typography>
-                <Typography variant='subtitle1'> {ele.description} </Typography>
+                <Typography variant='h4'>{ele.heading || "heading"}</Typography>
+                <Typography variant='subtitle1'> {ele.description || "description"} </Typography>
 
               </Stack>
 

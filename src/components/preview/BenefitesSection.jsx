@@ -35,7 +35,7 @@ const BenefitsImages = ({ image }) => {
 };
 
 
-const BenefitesSection = ({id,data}) => {
+const BenefitesSection = ({data}) => {
     const theme = useTheme();
     const componentsValue = useSelector((state) => state.universalThemeReducer);
     const { theme: selectedTheme } = componentsValue;
@@ -59,7 +59,7 @@ const BenefitesSection = ({id,data}) => {
                     color: selectedTheme.typography.subTitleColor,
                 }}
             >
-                {data?.title || ' Benefits Title'}
+                {data?.content?.title || ' Benefits Title'}
             </Typography>
 
             <Typography
@@ -72,7 +72,7 @@ const BenefitesSection = ({id,data}) => {
 
                 }}
             >
-                {data?.optionalText || '  Lorem ipsum dolor sit amet.'}
+                {data?.content?.optionalText || '  Lorem ipsum dolor sit amet.'}
             </Typography>
 
             {/* ------------------------------------- Content Box--------------------------------------------------- */}
@@ -85,7 +85,7 @@ const BenefitesSection = ({id,data}) => {
                 padding: '2rem'
 
             }}>
-                {data?.list?.map((ele, index) =>
+                {data?.content?.benefits?.map((ele, index) =>
                     <Stack
                         sx={{
                             height: "auto",

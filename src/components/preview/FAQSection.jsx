@@ -1,38 +1,50 @@
-import { ExpandLess, ExpandMore } from '@mui/icons-material'
-import { Box, Button, IconButton, Stack, Typography, useTheme } from '@mui/material'
-import { useState } from 'react'
-
-const FAQs = {
-  image: '',
-  content:
-    [
-      {
-        question: 'culpa harum laboriosam dolorem magni quas distinctio odio tempora, nostrum facilis nisi quos?',
-        answers: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum, quidem tenetur? Magni doloribus nesciunt atque, id dolorem hic expedita doloremque laudantium sequi iusto unde ex cum error. Quasi, voluptate numquam.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum, quidem tenetur? Magni doloribus nesciunt atque, id dolorem hic expedita doloremque laudantium sequi iusto unde ex cum error. Quasi, voluptate numquam.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum, quidem tenetur? Magni doloribus nesciunt atque, id dolorem hic expedita doloremque laudantium sequi iusto unde ex cum error. Quasi, voluptate numquam.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum, quidem tenetur? Magni doloribus nesciunt atque, id dolorem hic expedita doloremque laudantium sequi iusto unde ex cum error. Quasi, voluptate numquam.'
-      },
-      {
-        question: 'culpa harum laboriosam dolorem magni quas distinctio odio tempora, nostrum facilis nisi quos?',
-        answers: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum, quidem tenetur? Magni doloribus nesciunt atque, id dolorem hic expedita doloremque laudantium sequi iusto unde ex cum error. Quasi, voluptate numquam.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum, quidem tenetur? Magni doloribus nesciunt atque, id dolorem hic expedita doloremque laudantium sequi iusto unde ex cum error. Quasi, voluptate numquam.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum, quidem tenetur? Magni doloribus nesciunt atque, id dolorem hic expedita doloremque laudantium sequi iusto unde ex cum error. Quasi, voluptate numquam.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum, quidem tenetur? Magni doloribus nesciunt atque, id dolorem hic expedita doloremque laudantium sequi iusto unde ex cum error. Quasi, voluptate numquam.'
-      },
-      {
-        question: 'culpa harum laboriosam dolorem magni quas distinctio odio tempora, nostrum facilis nisi quos?',
-        answers: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum, quidem tenetur? Magni doloribus nesciunt atque, id dolorem hic expedita doloremque laudantium sequi iusto unde ex cum error. Quasi, voluptate numquam.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum, quidem tenetur? Magni doloribus nesciunt atque, id dolorem hic expedita doloremque laudantium sequi iusto unde ex cum error. Quasi, voluptate numquam.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum, quidem tenetur? Magni doloribus nesciunt atque, id dolorem hic expedita doloremque laudantium sequi iusto unde ex cum error. Quasi, voluptate numquam.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum, quidem tenetur? Magni doloribus nesciunt atque, id dolorem hic expedita doloremque laudantium sequi iusto unde ex cum error. Quasi, voluptate numquam.'
-      },
-      {
-        question: 'culpa harum laboriosam dolorem magni quas distinctio odio tempora, nostrum facilis nisi quos?',
-        answers: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum, quidem tenetur? Magni doloribus nesciunt atque, id dolorem hic expedita doloremque laudantium sequi iusto unde ex cum error. Quasi, voluptate numquam.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum, quidem tenetur? Magni doloribus nesciunt atque, id dolorem hic expedita doloremque laudantium sequi iusto unde ex cum error. Quasi, voluptate numquam.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum, quidem tenetur? Magni doloribus nesciunt atque, id dolorem hic expedita doloremque laudantium sequi iusto unde ex cum error. Quasi, voluptate numquam.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum, quidem tenetur? Magni doloribus nesciunt atque, id dolorem hic expedita doloremque laudantium sequi iusto unde ex cum error. Quasi, voluptate numquam.'
-      },
-
-    ]
-
-}
+/* eslint-disable react/prop-types */
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import { Box, Button, IconButton, Stack, Typography, useTheme } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 
+const FAQImages = ({ image }) => {
+    const [previewUrl, setPreviewUrl] = useState(null);
+
+    useEffect(() => {
+        // If image is a File instance, create an object URL
+        if (image && image instanceof File) {
+            const url = URL.createObjectURL(image);
+            setPreviewUrl(url);
+
+            // Cleanup: revoke the URL on unmount or if image changes
+            return () => URL.revokeObjectURL(url);
+        } else {
+            // If image is a URL or null, use it directly
+            setPreviewUrl(image);
+        }
+    }, [image]);
+
+    return (
+        <img
+            src={previewUrl || "/heroImage.jpg"}
+            alt="services-img"
+            style={{
+                width: "100%",
+                height: "20rem",
+                objectFit: "cover",
+                borderRadius: "12px"
+            }}
+        />
+    );
+};
 
 
-const FAQSection = () => {
+const FAQSection = ({data}) => {
   const [isExpanded, setIsExpanded] = useState({})
   const [isExpandedContainer, setIsExpandedContainer] = useState(false)
+  const theme = useTheme()
+  const componentsValue = useSelector((state) => state.universalThemeReducer);
+    const { theme: selectedTheme } = componentsValue;
+
+
   const toggleExpanded = (index) => {
     setIsExpanded((prev) => ({
       ...prev,
@@ -40,22 +52,24 @@ const FAQSection = () => {
     }));
   };
 
-  const theme = useTheme()
   return (
     <Stack
       sx={{
         width: "100vw",
         padding: "3rem 10rem",
-        bgcolor: theme.palette.background.section,
-      }}>
+        bgcolor:
+        selectedTheme.background.section || theme.palette.background.section,
+    }}>
       <Typography
         variant="h3"
         mb={4}
         sx={{
           mx: "auto",
+          color: selectedTheme.typography.subTitleColor,
+
         }}
       >
-        FAQs
+        {data?.content?.title || ' FAQs Title'}
       </Typography>
       {/* -------------------------An image [optional] */}
       <Box sx={{
@@ -64,13 +78,7 @@ const FAQSection = () => {
         mb: 4,
 
       }}>
-        <img src='/heroImage.jpg' alt='faq-img' style={{
-          width: "100%",
-          aspectRatio: '1',
-          objectFit: "cover",
-         borderRadius: "30px",
-
-        }} />
+      <FAQImages image={ data?.content?.image}/>
 
       </Box>
 
@@ -82,7 +90,7 @@ const FAQSection = () => {
           mt: 2,
           borderRadius: "8px",
           backgroundColor: theme.palette.background.section,
-          height: isExpandedContainer ? FAQs.content.length >3 && FAQs.content.length <=8? `${FAQs.content.length * 11}vh`:'90vh'  : '35vh',
+          height: isExpandedContainer ? data?.content.fAndq.length >3 && data?.content.fAndq.length<=8? `${data?.content.fAndq.length* 11}vh`:'90vh'  : '35vh',
           transition: 'height 0.3s ease-in-out',
           overflow: 'scroll',
           paddingY: 2,
@@ -109,11 +117,11 @@ const FAQSection = () => {
 
 
 
-        {FAQs.content.map((ele, index) =>
+        {data?.content?.fAndq?.map((ele, index) =>
           <Box
             key={index}
             sx={{
-              my: 2,
+             m:2,
               borderRadius: "8px",
               backgroundColor: theme.palette.background.paper,
               height: isExpanded[index] ? '10rem' : '4rem',
@@ -141,7 +149,8 @@ const FAQSection = () => {
             {/* --------------------------------- Question--------------------------------------- */}
             <Stack direction={'row'} sx={{
               width: '100%',
-              gap: '0.56rem'
+              gap: '0.56rem',
+              
 
             }} >
 
@@ -177,7 +186,7 @@ const FAQSection = () => {
               padding: "0.5rem 1rem"
             }}>
               <Typography variant='subtitle1'>
-                {ele.answers}
+                {ele.answer}
               </Typography>
             </Box>
 
@@ -190,7 +199,7 @@ const FAQSection = () => {
 
       </Box>
 
-      {FAQs.content.length > 3 && <Stack variant='center'>
+      {data?.content.fAndq.length> 3 && <Stack variant='center'>
         <Button
           onClick={() => setIsExpandedContainer((pre) => !pre)}
           sx={{
