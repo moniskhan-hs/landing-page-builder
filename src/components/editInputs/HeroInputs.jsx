@@ -160,7 +160,7 @@ const HeroInputs = ({ id }) => {
                 <FormControlLabel
                   value="link"
                   control={<Radio />}
-                  label="Embeded Link"
+                  label="Embedded Link"
                 />
               </RadioGroup>
             </FormControl>
@@ -178,10 +178,10 @@ const HeroInputs = ({ id }) => {
             </Box>
           ) : (
             <Box>
-              <Typography variant="subtitle2">Add Embeded Link</Typography>
+              <Typography variant="subtitle2">Add Embedded Link</Typography>
               <TextField
                 name="embededLink"
-                placeholder="Embeded Video Link"
+                placeholder="Embedded Video Link"
                 size="small"
                 value={content.embededLink}
                 onChange={handleChange}
