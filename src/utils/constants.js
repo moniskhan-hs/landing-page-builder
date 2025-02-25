@@ -4,9 +4,9 @@ import CallToActionInputs from "../components/editInputs/CallToActionInputs";
 import FAQsInputs from "../components/editInputs/FAQsInputs";
 import FormInputs from "../components/editInputs/FormInputs";
 import HeroInputs from "../components/editInputs/HeroInputs";
-import ScheduleSectionInputs from "../components/editInputs/ScheduleSectionInputs";
+import NotIncludedOrIncludedInputs from "../components/editInputs/NotIncludedOrIncludedInputs";
 import ServicesInputs from "../components/editInputs/ServicesInputs";
-import TestimonialsInputs from '../components/editInputs/TestimonialsInputs';
+import TestimonialsInputs from '../components/editInputs/TestimonialsInputs/TestimonialsInputs';
 import ThemeInputs from "../components/editInputs/ThemeInputs/ThemeInputs";
 import AboutUsSection from "../components/preview/AboutUsSection";
 import BenefitesSection from "../components/preview/BenefitesSection";
@@ -14,8 +14,7 @@ import CallToActionSection from "../components/preview/CallToActionSection";
 import FAQSection from "../components/preview/FAQSection";
 import FormSection from "../components/preview/FormSection";
 import HeroSection from "../components/preview/HeroSection";
-import IncludedOrNotIncluded from "../components/preview/IncludedOrNotIncluded";
-import ScheduleSection from "../components/preview/ScheduleSection";
+import IncludedOrNotIncludedSection from "../components/preview/IncludedOrNotIncludedSection";
 import ServicesOrOfferingSection from "../components/preview/ServicesOrOfferingSection";
 import TestimonialSection from "../components/preview/TestimonialSection";
 
@@ -24,9 +23,8 @@ const componentMap = {
     "SERVICES": ServicesOrOfferingSection,
     "TESTIMONIALS": TestimonialSection,
     "BENEFITS":BenefitesSection,
-    "INCLUDED / NOT-INCLUDED":IncludedOrNotIncluded,
+    "INCLUDED / NOT-INCLUDED":IncludedOrNotIncludedSection,
     "ABOUT US": AboutUsSection,
-    "SCHEDULE": ScheduleSection,
     "FORM": FormSection,
     "FAQ": FAQSection,
     "CALL TO ACTION": CallToActionSection
@@ -44,9 +42,8 @@ export const componentsInputs = [
     {"SERVICES": ServicesInputs},
     {"TESTIMONIALS": TestimonialsInputs},
     {"BENEFITS":BenefitsInputs},
-    {"INCLUDED / NOT-INCLUDED":IncludedOrNotIncluded},
+    {"INCLUDED / NOT-INCLUDED":NotIncludedOrIncludedInputs},
     {"ABOUT US": AboutInputs},
-    {"SCHEDULE": ScheduleSectionInputs},
    { "FORM": FormInputs},
    { "FAQ": FAQsInputs},
    { "CALL TO ACTION": CallToActionInputs},

@@ -87,12 +87,25 @@ const PreviewContainer = ({ isFullPreviewed }) => {
               case "BENEFITS":
                 selectedComponent = componentsValue.benefits;
                 break;
+                case "TESTIMONIALS":
+                  selectedComponent = componentsValue.testimonials;
+                  break;
+                  case "INCLUDED / NOT-INCLUDED":
+                    selectedComponent = componentsValue.includedNotIncluded;
+                    break;
               case "ABOUT US":
                 selectedComponent = componentsValue.about;
                 break;
               case "FAQ":
                 selectedComponent = componentsValue.frequentlyAsked;
                 break;
+              
+              case "CALL TO ACTION":
+                selectedComponent = componentsValue.callToAction;
+                break;
+              
+              
+
 
               default:
                 selectedComponent = componentsValue.hero;
@@ -130,16 +143,24 @@ const PreviewContainer = ({ isFullPreviewed }) => {
                 case "BENEFITS":
                   selectedComponent = componentsValue.benefits;
                   break;
+                  case "TESTIMONIALS":
+                    selectedComponent = componentsValue.testimonials;
+                    break;
                 case "ABOUT US":
                   selectedComponent = componentsValue.about;
                   break;
                 case "FAQ":
                   selectedComponent = componentsValue.frequentlyAsked;
                   break;
+                  case "INCLUDED / NOT-INCLUDED":
+                    selectedComponent = componentsValue.includedNotIncluded;
+                    break;
+                  case "CALL TO ACTION":
+                    selectedComponent = componentsValue.callToAction;
+                    break;
                 default:
                   selectedComponent = componentsValue.hero;
-
-                  break;
+                break;
               }
               console.log("selectedComponent:", selectedComponent);
               const dataToSend = selectedComponent.find(

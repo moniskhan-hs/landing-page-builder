@@ -20,15 +20,18 @@ import {
   addLabel,
   removeComponent,
 } from "../redux/reducers/addMultiComponenet";
-import { componentsInputs } from "../utils/constants";
+import { addSelectedComponent } from "../redux/reducers/selectedComponent";
 import {
   removeAbout,
   removeBenefit,
+  removeCallToAction,
   removeFAQ,
   removeHero,
+  removeIncludedNotIncluded,
   removeService,
+  removeTestimonials,
 } from "../redux/reducers/universalStyles";
-import { addSelectedComponent } from "../redux/reducers/selectedComponent";
+import { componentsInputs } from "../utils/constants";
 
 const SelectorSection = ({
   id,
@@ -60,6 +63,10 @@ const SelectorSection = ({
         dispatch(removeHero(id));
 
         break;
+      case "TESTIMONIALS":
+        dispatch(removeTestimonials(id));
+        break;
+
       case "SERVICES":
         dispatch(removeService(id));
 
@@ -74,7 +81,12 @@ const SelectorSection = ({
       case "FAQ":
         dispatch(removeFAQ(id));
         break;
-
+      case "INCLUDED / NOT-INCLUDED":
+        dispatch(removeIncludedNotIncluded(id));
+        break;
+      case "CALL TO ACTION":
+        dispatch(removeCallToAction(id));
+        break;
       default:
         dispatch(removeComponent(id));
         break;
@@ -85,6 +97,7 @@ const SelectorSection = ({
   useEffect(() => {
     if (isExpanded && title !== "THEME") {
       dispatch(addSelectedComponent({ id, name: title }));
+      console.log('title:', title)
     }
   }, [isExpanded, title, dispatch, id]);
 
@@ -146,10 +159,14 @@ const SelectorSection = ({
             )}
 
             <Typography
+            variant="subtitle1"
               ml={1}
               sx={{
                 color: isExpanded ? theme.palette.primary.main : "#00000",
                 fontWeight: isExpanded ? "bold" : "normal",
+                textTransform:"capitalize",
+                fontSize:"0.8rem"
+                
               }}
             >
               {title}

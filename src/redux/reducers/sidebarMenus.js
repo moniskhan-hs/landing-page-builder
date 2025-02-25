@@ -34,12 +34,6 @@ const initialState = [
         isSelected: false,
         label: ''
     },
-
-    {
-        title: "SCHEDULE",
-        isSelected: false,
-        label: ''
-    },
     {
         title: "FORM",
         isSelected: false,

@@ -18,7 +18,7 @@ const ThemeInputs = () => {
   const [backgrounds, setBackgrounds] = useState({
     default: '#f5f5f5',
     paper: '#ffffff',
-    section: '#755'
+    section: '#ADD8E6'
   });
   const [activeBg, setActiveBg] = useState('default');
   const [iconBackground, setIconBackground] = useState('#ffff')
@@ -160,7 +160,7 @@ const ThemeInputs = () => {
                   <Typography variant="subtitle1" sx={{
                     // placeSelf: 'end'
                   }}>
-                    hex/rgb
+                    HEX / RGB
                   </Typography>
 
                   <TextField

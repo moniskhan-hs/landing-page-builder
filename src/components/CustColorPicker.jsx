@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import { Box, Stack, TextField, Typography, useTheme } from '@mui/material'
-import React, { useState } from 'react'
 import { SliderPicker } from 'react-color'
 
 const CustColorPickerWithElement = ({ componentColor, HanldeToPickColor, componentName, variantName }) => {
@@ -37,7 +36,7 @@ const CustColorPickerWithElement = ({ componentColor, HanldeToPickColor, compone
                 <Stack sx={{
                     width: "30%"
                 }}>
-                    <Typography variant='subtitle1'>hex/rgb</Typography>
+                    <Typography variant='subtitle1'>HEX / RGB</Typography>
                     <TextField placeholder='color' size='small' value={componentColor} onChange={(e) => HanldeToPickColor(e.target.value)} sx={{
 
 

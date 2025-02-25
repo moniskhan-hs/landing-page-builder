@@ -64,7 +64,7 @@ const ButtonStyle = ({
               marginLeft: "auto",
             }}
           >
-            <Typography variant="subtitle1">hex/rgb</Typography>
+            <Typography variant="subtitle1">HEX / RGB</Typography>
             <TextField
               placeholder="color"
               size="small"
@@ -111,7 +111,7 @@ const ButtonStyle = ({
               marginLeft: "auto",
             }}
           >
-            <Typography variant="subtitle1">hex/rgb</Typography>
+            <Typography variant="subtitle1">HEX / RGB</Typography>
             <TextField
               placeholder="color"
               size="small"

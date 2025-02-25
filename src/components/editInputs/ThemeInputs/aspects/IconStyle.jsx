@@ -37,7 +37,7 @@ const IconStyle = ({iconColor,setIconColor,setSelectedIconType,iconBackground,se
             marginLeft: "auto",
           }}
         >
-          <Typography variant="subtitle1">hex/rgb</Typography>
+          <Typography variant="subtitle1">HEX / RGB</Typography>
           <TextField
             placeholder="color"
             size="small"
@@ -81,7 +81,9 @@ const IconStyle = ({iconColor,setIconColor,setSelectedIconType,iconBackground,se
             sx={{ textAlign: "center", cursor: "pointer" }}
             onClick={() => setSelectedIconType(ele.type)}
           >
-            <Typography variant="subtitle1">{ele.type}</Typography>
+            <Typography variant="subtitle1" sx={{
+              textTransform:"capitalize"
+            }}>{ele.type}</Typography>
             <Stack
               variant="center"
               sx={{
@@ -125,7 +127,7 @@ const IconStyle = ({iconColor,setIconColor,setSelectedIconType,iconBackground,se
             marginLeft: "auto",
           }}
         >
-          <Typography variant="subtitle1">hex/rgb</Typography>
+          <Typography variant="subtitle1">HEX / RGB</Typography>
           <TextField
             placeholder="color"
             size="small"

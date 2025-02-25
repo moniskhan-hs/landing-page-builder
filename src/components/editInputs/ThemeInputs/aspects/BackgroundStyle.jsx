@@ -34,7 +34,7 @@ const BackgroundStyle = ({backgrounds,setActiveBg,activeBg,handleInputBackground
           >
             {/* Input Field for Custom Color */}
             <Stack variant="column">
-              <Typography variant="subtitle1">hex/rgb</Typography>
+              <Typography variant="subtitle1">HEX / RGB</Typography>
 
               <TextField
                 placeholder="Color"
@@ -60,7 +60,9 @@ const BackgroundStyle = ({backgrounds,setActiveBg,activeBg,handleInputBackground
               />
             </Stack>
 
-            <Typography variant="subtitle1">{type}</Typography>
+            <Typography variant="subtitle1" sx={{
+              textTransform:"capitalize"
+            }}>{type}</Typography>
 
             {/* Color Preview Box */}
             <Box

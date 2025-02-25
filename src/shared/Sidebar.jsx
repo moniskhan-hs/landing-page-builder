@@ -5,9 +5,12 @@ import { addMultiple } from "../redux/reducers/addMultiComponenet";
 import {
   addAbout,
   addBenefit,
+  addCallToAction,
   addFAQ,
   addHero,
+  addIncludedAndNotIncluded,
   addService,
+  addTestimonials,
 } from "../redux/reducers/universalStyles";
 
 const Sidebar = () => {
@@ -109,6 +112,85 @@ const Sidebar = () => {
           })
         );
         break;
+      
+         case 'INCLUDED / NOT-INCLUDED':
+          dispatch(
+            addIncludedAndNotIncluded({
+              id,
+              content: {
+                title: "Some title",
+                infoText:'some information text here',
+                includes: [
+                  {
+                    heading: "some question",
+                    description:
+                      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex sequi veniam nemo corporis maxime! Labore nesciunt adipisci perferendis, sed rem nemo dicta earum, sint, provident explicabo quo sunt eius eligendi.",
+                    image:null
+                    },
+                ],
+              },
+            })
+          );
+          break;
+          case "TESTIMONIALS":
+            dispatch(
+              addTestimonials({
+                id,
+                content: {
+                  title: "Some title",
+                  infoText:'some information text here',
+                  highlightedReview: {
+                    name: "John wick",
+                    address:'New York, US',
+                    description:
+                      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex sequi veniam nemo corporis maxime! Labore nesciunt adipisci perferendis, sed rem nemo dicta earum, sint, provident explicabo quo sunt eius eligendi.",
+                    image:null,
+                    ratingValue:4,
+                    },
+
+                  users: [
+                    {
+                      name: "some question",
+                      address:'New York, US',
+                      description:
+                        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex sequi veniam nemo corporis maxime! Labore nesciunt adipisci perferendis, sed rem nemo dicta earum, sint, provident explicabo quo sunt eius eligendi.",
+                      image:null,
+                      ratingValue:4,
+                      },
+                  ],
+                },
+              })
+            );
+          break;
+          case "CALL TO ACTION":
+            dispatch(
+              addCallToAction({
+                id,
+                content: {
+                  title: "Some title",
+                  information: [
+                    {
+                      text: "some information provided",
+                      // icon : icon Name - [in future]
+                      },
+                  ],
+                  buttonText :'',
+                  advantages:[
+                    {
+                      text: "some advantage provided",
+                      // icon : icon Name - [in future]
+                      },
+                  ],
+                  infoText:'some information text here',
+
+                },
+              })
+            );
+          break;
+
+
+
+
       default:
         dispatch(
           addHero({
