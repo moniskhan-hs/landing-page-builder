@@ -1,54 +1,56 @@
 /* eslint-disable react/prop-types */
-import { Cancel } from '@mui/icons-material'
-import { Box, Stack, Typography, useTheme } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import { Box, Stack, Typography, useTheme } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 const IncludedNotIncludedImage = ({ image }) => {
-  const [previewUrl, setPreviewUrl] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState(null);
 
-  useEffect(() => {
-    // If image is a File instance, create an object URL
-    if (image && image instanceof File) {
-      const url = URL.createObjectURL(image);
-      setPreviewUrl(url);
+    useEffect(() => {
+        // If image is a File instance, create an object URL
+        if (image && image instanceof File) {
+            const url = URL.createObjectURL(image);
+            setPreviewUrl(url);
 
-      // Cleanup: revoke the URL on unmount or if image changes
-      return () => URL.revokeObjectURL(url);
-    } else {
-      // If image is a URL or null, use it directly
-      setPreviewUrl(image);
-    }
-  }, [image]);
+            // Cleanup: revoke the URL on unmount or if image changes
+            return () => URL.revokeObjectURL(url);
+        } else {
+            // If image is a URL or null, use it directly
+            setPreviewUrl(image);
+        }
+    }, [image]);
 
-  return (
-    <img
-      src={previewUrl || "/heroImage.jpg"}
-      alt="services-img"
-      style={{
-        width: "100%",
-        height: "100%",
-        objectFit: "fill",
-        borderRadius:"12px"
-      }}
-    />
-  );
+    return (
+        <img
+            src={previewUrl || "/heroImage.jpg"}
+            alt="services-img"
+            style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "fill",
+                borderRadius: "12px"
+            }}
+        />
+    );
 };
 
-const IncludedOrNotIncludedSection = ({data}) => {
+
+
+
+const IncludedOrNotIncludedSection = ({data,isFetchedTheme,fetchingThemeData}) => {
     const theme = useTheme();
     const componentsValue = useSelector((state) => state.universalThemeReducer);
-    const {theme: selectedTheme } = componentsValue;
-     
-   
+    const { theme: selectedTheme } = componentsValue;
+
+
     return (
         <Stack
             sx={{
                 width: "100vw",
-                padding: "3rem 10rem",
+                padding: { md: "3rem 10rem", xs: "1rem" },
                 bgcolor:
-              selectedTheme.background.section || theme.palette.background.section,
-     
+                 isFetchedTheme?fetchingThemeData?.background.section:   selectedTheme?.background.section || theme.palette.background.section,
+
 
             }}
         >
@@ -63,13 +65,13 @@ const IncludedOrNotIncludedSection = ({data}) => {
                     justifyContent: "center",
                     alignItems: "center",
                     gap: 1,
-                    color:selectedTheme.typography.subTitleColor
+                    color: isFetchedTheme? fetchingThemeData?.typography.subTitleColor: selectedTheme?.typography.subTitleColor
                 }}
             >
 
-               {data?.content?.title || "Some title here"}
+                {data?.content?.title || "Some title here"}
                 {/* <span > logo */}
-                    {/* {<Cancel/>  } */}
+                {/* {<Cancel/>  } */}
                 {/* </span> */}
 
             </Typography>
@@ -79,11 +81,11 @@ const IncludedOrNotIncludedSection = ({data}) => {
                 mb={4}
                 sx={{
                     mx: "auto",
-                    color:selectedTheme.typography.subTitleColor,
+                    color: isFetchedTheme?fetchingThemeData?.typography.subTitleColor:  selectedTheme?.typography.subTitleColor,
                     fontWeight: "bold"
                 }}
             >
-                { data?.content?.infoText|| 'Lorem ipsum dolor sit amet.'}
+                {data?.content?.infoText || 'Lorem ipsum dolor sit amet.'}
             </Typography>
 
 
@@ -92,46 +94,47 @@ const IncludedOrNotIncludedSection = ({data}) => {
             <Box
                 sx={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(2, 1fr)',
+                    gridTemplateColumns: {md:'repeat(2, 1fr)',xs:'repeat(1, 1fr)'},
                     justifyContent: 'center',
-                    gap: "2rem",
-                    padding: '2rem'
+                    gap:{md: "2rem",xs:"0.5rem"},
+                    padding: {md:'2rem',xs:"0.5rem"}
                 }}
             >
 
                 {
-                    data?.content?.includes.map((ele, index) => 
-                    <Stack
-sx={{
-    bgcolor: selectedTheme.background.paper || theme.palette.background.paper,
-    borderRadius: "12px",
-    p:1
-}}
-                        key={index}>
-                        <Stack direction={'row'} gap={1}>
-                            <Box
+                    data?.content?.includes.map((ele, index) =>
+                        <Stack
+                            sx={{
+                                bgcolor: isFetchedTheme? fetchingThemeData?.background.paper: selectedTheme?.background.paper || theme.palette.background.paper,
+                                borderRadius: "12px",
+                                p: 1
+                            }}
+                            key={index}>
+                            <Stack direction={{md:'row',xs:"column"}} gap={1}>
+                                <Box
 
-                                sx={{
-                                    height: '4rem'
+                                    sx={{
+                                        height: {md:'4rem',xs:"100%"}
+                                    }}>
+
+                                    <IncludedNotIncludedImage image={ele.image} />
+
+                                </Box>
+                                <Box sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    margin:{xs:'auto',md:"0px"}
                                 }}>
 
-                                <IncludedNotIncludedImage image={ele.image}/>
+                                    <Typography variant='h4'color={isFetchedTheme?selectedTheme.typography.headingColor: selectedTheme?.typography.headingColor}>
+                                        {ele.heading}
+                                    </Typography>
+                                </Box>
+                            </Stack>
 
-                            </Box>
-                            <Box sx={{
-                                display: 'flex',
-                                alignItems: 'center'
-                            }}>
+                            <Typography variant='subtitle1' mt={1} sx={{textAlign:{md:"start",xs:"center"}}}  color={isFetchedTheme?fetchingThemeData?.typography.paragraphColor: selectedTheme?.typography.paragraphColor}>{ele.description}</Typography>
 
-                                <Typography variant='h4'  color={selectedTheme.typography.headingColor}>
-                                    {ele.heading}
-                                </Typography>
-                            </Box>
-                        </Stack>
-
-                        <Typography variant='subtitle1' mt={1} color={selectedTheme.typography.paragraphColor}>{ele.description}</Typography>
-
-                    </Stack>)
+                        </Stack>)
                 }
 
             </Box>

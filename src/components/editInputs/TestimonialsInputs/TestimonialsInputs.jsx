@@ -1,10 +1,14 @@
 /* eslint-disable react/prop-types */
-import { DeleteOutlineOutlined } from "@mui/icons-material";
+import { CloudUpload, DeleteOutlineOutlined } from "@mui/icons-material";
 import { Box, Button, IconButton, Rating, Stack, TextField, Typography, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { addTestimonialItem, changeTestimonials, changeTestimonialsList, removeTestimonialItem } from "../../../redux/reducers/universalStyles";
+import { addTestimonialItem, changeTestimonialListImage, changeTestimonials, changeTestimonialsList, removeTestimonialItem } from "../../../redux/reducers/universalStyles";
 import ImageUpload from "../../ImageUpload";
 import HighlightedReviewInputs from "./HighlightedReviewInputs";
+import { uploadImageOnFirebaseStorageServices } from "../../../utils/imageupload/firebase-storage-upload";
+import { v4 as uuidv4 } from 'uuid';
+import { deleteObject, ref } from "firebase/storage";
+import { storage } from "../../../firebase";
 
 const TestimonialsInputs = ({ id }) => {
   const theme = useTheme();
@@ -36,11 +40,7 @@ const TestimonialsInputs = ({ id }) => {
     );
   };
 
-  const hanldeIsSelectedReview = (e, index, field) => {
-    dispatch(
-      changeTestimonialsList({ id, index, content: e.target.checked, field })
-    );
-  }
+
 
 
   // --- Handlers for Service Item Fields ---
@@ -50,22 +50,67 @@ const TestimonialsInputs = ({ id }) => {
     );
   };
 
-  const handleTestimonialsImageChange = (e, index) => {
+  const handleTestimonialsImageChange = (e, userId) => {
+    handleFileChange(e, userId);
+  };
+
+  const handleTestimonialImageDrop = (e, userId) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) handleFileChange({ target: { files: [file] } }, userId);
+
+  };
+
+
+  const handleFileChange = async (e, userId) => {
+    const websiteId = `mywebsite`;
     const file = e.target.files[0];
-    if (file) {
-      dispatch(
-        changeTestimonialsList({ id, index, content: file, field: "image" })
+    if (!file || !userId) return;
+
+    try {
+      const downloadURL = await uploadImageOnFirebaseStorageServices(
+        file,
+        websiteId,
+        `${userId}-${uuidv4()}` // Unique filename with user ID
       );
+      console.log('image uploaded-----------------------------')
+
+      dispatch(changeTestimonialListImage({
+        id,
+        userId,
+        content: downloadURL,
+        field: 'image'
+      }));
+    } catch (error) {
+      console.error("Upload failed:", error);
     }
   };
 
-  const handleTestimonialImageDrop = (e, index) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      dispatch(
-        changeTestimonialsList({ id, index, content: file, field: "image" })
-      );
+
+
+  // to delete the uploaded image
+  const handleDeleteImage = async (userId, imageUrl) => {
+    if (!imageUrl) return;
+
+    try {
+      // Extract path from download URL
+      const encodedPath = imageUrl.split('/o/')[1].split('?')[0];
+      const decodedPath = decodeURIComponent(encodedPath);
+      const imageRef = ref(storage, decodedPath);
+
+      // Delete from Firebase Storage
+      await deleteObject(imageRef);
+
+      // Remove from Redux state
+      dispatch(changeTestimonialListImage({
+        id,
+        userId,
+        content: null,
+        field: 'image'
+      }));
+    } catch (error) {
+      console.error("Error deleting image:", error);
+      // Optionally show error to user
     }
   };
 
@@ -77,14 +122,14 @@ const TestimonialsInputs = ({ id }) => {
     dispatch(
       addTestimonialItem({
         id,
-        user:  {
+        user: {
           name: "some question",
-          address:'New York, US',
+          address: 'New York, US',
           description:
             "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex sequi veniam nemo corporis maxime! Labore nesciunt adipisci perferendis, sed rem nemo dicta earum, sint, provident explicabo quo sunt eius eligendi.",
-          image:null,
-          ratingValue:4,
-          },
+          image: null,
+          ratingValue: 4,
+        },
       })
     );
   };
@@ -123,13 +168,13 @@ const TestimonialsInputs = ({ id }) => {
           fullWidth
         />
       </Box>
-{/* ------------------------------- highlighted review------------------------------------------------ */}
-<HighlightedReviewInputs content={content}  id={id} theme={theme}/>
+      {/* ------------------------------- highlighted review------------------------------------------------ */}
+      <HighlightedReviewInputs content={content} id={id} theme={theme} />
 
       {/* Map through each service item */}
       {content?.users?.map((user, index) => (
         <Box
-          key={user.id || index} // Use a stable unique key (service.id)
+          key={user.id || index} // Use a stable unique key (user.id)
           sx={{
             bgcolor: theme.palette.background.paper,
             padding: "0.5rem",
@@ -181,7 +226,7 @@ const TestimonialsInputs = ({ id }) => {
               name="ratingValue"
               value={user.ratingValue}
               onChange={(event) => {
-                handleTestimonialsFieldChange(event,index,"ratingValue" )
+                handleTestimonialsFieldChange(event, index, "ratingValue")
               }}
             />
           </Box>
@@ -204,11 +249,82 @@ const TestimonialsInputs = ({ id }) => {
           {/* Image Upload for Service */}
           <Box sx={{ mb: 1 }}>
             <Typography variant="subtitle1">Image</Typography>
-            <ImageUpload
-              file={user.image}
-              handleFileDrop={(e) => handleTestimonialImageDrop(e, index)}
-              hanldeFileUpload={(e) => handleTestimonialsImageChange(e, index)}
-            />
+            <Box
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => handleTestimonialImageDrop(e, user.id)}
+              sx={{
+                p: 1,
+                textAlign: "center",
+                borderRadius: "8px",
+                "&:hover": { borderColor: "primary.main" },
+                width: "70%",
+                // mx: 'auto',
+                bgcolor: '#f8f9fa',
+                border: "2px dashed #ccc",
+              }}
+            >
+              {user.image ? (
+                <>
+                  <img
+                    src={user.image}
+                    alt="Preview"
+                    style={{
+                      maxWidth: 100,
+                      maxHeight: 100,
+                      marginBottom: 8,
+                      borderRadius: 4
+                    }}
+                  />
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={() => handleDeleteImage(user.id, user.image)}
+                  >
+                    Remove Image
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <CloudUpload sx={{
+                    color: "#6c757d",
+                    width: "3rem",
+                    height: "2rem",
+                    mx: "auto"
+                  }} />
+                  <Box sx={{
+                    position: "relative",
+
+
+                  }}>
+                    <label htmlFor={`file-upload-${user.id}`}>
+                      <Box
+                        sx={{
+                          // padding: "20px",
+                          textAlign: "center",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <Typography variant="subtitle2" sx={{ color: "#a9a9a9" }}>
+                          Drag file here or click to browse.
+                        </Typography>
+                      </Box>
+                    </label>
+
+                    <input
+                      id={`file-upload-${user.id}`}
+                      type="file"
+                      style={{
+                        display: "none", // Hide but still clickable via label
+                      }}
+                      onChange={(e) => handleTestimonialsImageChange(e, user.id)}
+                      accept="image/*"
+                    />
+                  </Box>
+
+
+                </>
+              )}
+            </Box>
           </Box>
 
 

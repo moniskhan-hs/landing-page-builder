@@ -1,15 +1,20 @@
 /* eslint-disable react/prop-types */
 import { useTheme } from "@emotion/react";
-import { DeleteOutlineOutlined } from "@mui/icons-material";
+import { CloudUpload, DeleteOutlineOutlined } from "@mui/icons-material";
 import { Box, Button, IconButton, Stack, TextField, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addIncludesItem,
   changeIncludedNotIncluded,
   changeIncludedNotIncludedList,
+  changeListImage,
   removeIncludeItem,
 } from "../../redux/reducers/universalStyles";
 import ImageUpload from "../ImageUpload";
+import { uploadImageOnFirebaseStorageServices } from "../../utils/imageupload/firebase-storage-upload";
+import { v4 as uuidv4 } from 'uuid';
+import { deleteObject, ref } from "firebase/storage";
+import { storage } from "../../firebase";
 
 const NotIncludedOrIncludedInputs = ({ id }) => {
   const dispatch = useDispatch();
@@ -64,35 +69,63 @@ const NotIncludedOrIncludedInputs = ({ id }) => {
       })
     );
   };
+  // ------------------------ image upload and delete logic--------------------------------
+  const handleImageChange = (e, itemId) => {
+    handleFileChange(e, itemId);
+  };
 
-  // File upload for an item’s image
-  const handleIncludedNotIncludedImageChange = (e, index) => {
+  const handleImageDrop = (e, itemId) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) handleFileChange({ target: { files: [file] } }, itemId);
+  };
+
+  const handleFileChange = async (e, itemId) => {
+    const websiteId = `mywebsite`;
     const file = e.target.files[0];
-    if (file) {
-      dispatch(
-        changeIncludedNotIncludedList({
-          id,
-          index,
-          content: file,
-          field: "image",
-        })
+    if (!file || !itemId) return;
+
+    try {
+      const downloadURL = await uploadImageOnFirebaseStorageServices(
+        file,
+        websiteId,
+        `${itemId}-${uuidv4()}` // Unique filename with service ID
       );
+
+      dispatch(changeListImage({
+        id,
+        itemId,
+        content: downloadURL,
+        field: 'image'
+      }));
+    } catch (error) {
+      console.error("Upload failed:", error);
     }
   };
 
-  // Drag-and-drop for an item’s image
-  const handleIncludedNotIncludedImageDrop = (e, index) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      dispatch(
-        changeIncludedNotIncludedList({
-          id,
-          index,
-          content: file,
-          field: "image",
-        })
-      );
+  // to delete the uploaded image
+  const handleDeleteImage = async (itemId, imageUrl) => {
+    if (!imageUrl) return;
+
+    try {
+      // Extract path from download URL
+      const encodedPath = imageUrl.split('/o/')[1].split('?')[0];
+      const decodedPath = decodeURIComponent(encodedPath);
+      const imageRef = ref(storage, decodedPath);
+
+      // Delete from Firebase Storage
+      await deleteObject(imageRef);
+
+      // Remove from Redux state
+      dispatch(changeListImage({
+        id,
+        itemId,
+        content: null,
+        field: 'image'
+      }));
+    } catch (error) {
+      console.error("Error deleting image:", error);
+      // Optionally show error to user
     }
   };
 
@@ -188,15 +221,83 @@ const NotIncludedOrIncludedInputs = ({ id }) => {
             />
           </Box>
 
-          {/* Image Upload */}
-          <Box sx={{ mb: 1 }}>
-            <Typography variant="subtitle1">Image</Typography>
-            <ImageUpload
-              file={item.image}
-              handleFileDrop={(e) => handleIncludedNotIncludedImageDrop(e, index)}
-              hanldeFileUpload={(e) => handleIncludedNotIncludedImageChange(e, index)}
-            />
-          </Box>
+        {/* Image Upload for Service */}
+                <Box sx={{ mb: 1 }}>
+                  <Typography variant="subtitle1">Image</Typography>
+                  <Box
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => handleImageDrop(e, item.id)}
+                    sx={{     p: 1,
+                      textAlign: "center",
+                      borderRadius: "8px",
+                      "&:hover": { borderColor: "primary.main" },
+                      width: "70%",
+                      // mx: 'auto',
+                      bgcolor: '#f8f9fa',
+                      border: "2px dashed #ccc", }}
+                  >
+                    {item.image ? (
+                      <>
+                        <img
+                          src={item.image}
+                          alt="Preview"
+                          style={{
+                            maxWidth: 100,
+                            maxHeight: 100,
+                            marginBottom: 8,
+                            borderRadius: 4
+                          }}
+                        />
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          onClick={() => handleDeleteImage(item.id, item.image)}
+                        >
+                          Remove Image
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+        <CloudUpload sx={{
+                          color: "#6c757d",
+                          width: "3rem",
+                          height: "2rem",
+                          mx: "auto"
+                      }} />                 
+                        <Box sx={{
+                          position: "relative",
+      
+      
+                      }}>
+                          <label htmlFor={`file-upload-${item.id}`}>
+                              <Box
+                                  sx={{
+                                      // padding: "20px",
+                                      textAlign: "center",
+                                      cursor: "pointer",
+                                  }}
+                              >
+                                  <Typography variant="subtitle2" sx={{ color: "#a9a9a9" }}>
+                                      Drag file here or click to browse.
+                                  </Typography>
+                              </Box>
+                          </label>
+      
+                          <input
+                              id={`file-upload-${item.id}`}
+                              type="file"
+                              style={{
+                                  display: "none", // Hide but still clickable via label
+                              }}
+                              onChange={(e) => handleImageChange(e, item.id)}
+                              accept="image/*"
+                          />
+                      </Box>
+      
+                      </>
+                    )}
+                  </Box>
+                </Box>
         </Box>
       ))}
 

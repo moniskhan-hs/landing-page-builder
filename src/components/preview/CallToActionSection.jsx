@@ -7,7 +7,7 @@ import {
   useTheme
 } from "@mui/material";
 import { useSelector } from "react-redux";
-const CallToActionSection = ({data}) => {
+const CallToActionSection = ({data,isFetchedTheme,fetchingThemeData}) => {
   const componentsValue = useSelector((state) => state.universalThemeReducer);
   const {theme: selectedTheme } = componentsValue;
   const theme = useTheme();
@@ -21,12 +21,12 @@ const CallToActionSection = ({data}) => {
         width: "35vh",
         padding: 2,
         bgcolor:
-        selectedTheme.background.paper || theme.palette.background.paper,
-           gap: '0.2rem',
+        isFetchedTheme?fetchingThemeData?.background.paper: selectedTheme?.background.paper || theme.palette.background.paper,
+        gap: '0.2rem',
         borderRadius: "12px"
       }}
     >
-      <Typography   color={selectedTheme.typography.subTitleColor} variant="h5" mb = {3}>{data?.content?.title  || 'Some title here'}</Typography>
+      <Typography   color={ isFetchedTheme?fetchingThemeData?.typography.subTitleColor: selectedTheme?.typography.subTitleColor} variant="h5" mb = {3}>{data?.content?.title  || 'Some title here'}</Typography>
 
       {/* ----------------------------------- Information----------------------------------- */}
       {
@@ -45,7 +45,7 @@ const CallToActionSection = ({data}) => {
               objectFit: 'contain'
 
             }} /> */}
-            <Typography variant='subtitle1'>
+            <Typography variant='subtitle1' color={ isFetchedTheme?fetchingThemeData?.typography.paragraphColor: selectedTheme?.typography.paragraphColor} >
 
               {ele.text || 'some information'}
             </Typography>
@@ -62,8 +62,8 @@ const CallToActionSection = ({data}) => {
         mx: 'auto',
         my:"0.6rem",
         fontWeight:"bold",
-        bgcolor:selectedTheme.button.buttonBackground,
-        color:selectedTheme.button.buttonTextColor
+        bgcolor:isFetchedTheme?fetchingThemeData?.button.buttonBackground: selectedTheme?.button.buttonBackground,
+        color: isFetchedTheme?fetchingThemeData?.button.buttonTextColor: selectedTheme?.button.buttonTextColor
       }}> {data?.content?.buttonText || 'Register'} </Button>
 {/* ------------------------------------ A D V A N T A G E S -------------------------------------- */}
 {
@@ -81,7 +81,7 @@ const CallToActionSection = ({data}) => {
               objectFit: 'contain'
 
             }} /> */}
-            <Typography variant='subtitle1'>
+            <Typography variant='subtitle1'  color={ isFetchedTheme?fetchingThemeData?.typography.paragraphColor: selectedTheme?.typography.paragraphColor}>
 
               {ele.text || 'some advantage'}
             </Typography>
@@ -93,10 +93,10 @@ const CallToActionSection = ({data}) => {
       
       <Typography  sx={{
         textAlign:'center',
-        bgcolor:selectedTheme.background.section,
+        bgcolor: isFetchedTheme? fetchingThemeData?.background.section: selectedTheme?.background.section,
         borderRadius:"8px",
         mt:2
-      }} color={selectedTheme.typography.subTitleColor} variant="subtitle1" mb = {3}>{data?.content?.infoText  || ' 6985+ lorem ipsune'}</Typography>
+      }} color={ isFetchedTheme? fetchingThemeData?.typography.subTitleColor: selectedTheme?.typography.subTitleColor} variant="subtitle1" mb = {3}>{data?.content?.infoText  || ' 6985+ lorem ipsune'}</Typography>
 
     
     </Stack>

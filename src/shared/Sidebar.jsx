@@ -7,6 +7,7 @@ import {
   addBenefit,
   addCallToAction,
   addFAQ,
+  addForm,
   addHero,
   addIncludedAndNotIncluded,
   addService,
@@ -29,11 +30,20 @@ const Sidebar = () => {
               buttonText: "",
               description: "",
               embededLink: "",
-              file: null,
+              downloadURL: null,
               infoText: "",
               title: "",
               value: "image",
               scheduleAdded: false,
+              scheduleData: [
+                {
+                  labelText: 'eg, TIME',
+                  infoText: '03:15 PM',
+                  image: null          // icon in future
+
+                }
+
+              ]
             },
           })
         );
@@ -50,6 +60,7 @@ const Sidebar = () => {
                   description:
                     "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex sequi veniam nemo corporis maxime! Labore nesciunt adipisci perferendis, sed rem nemo dicta earum, sint, provident explicabo quo sunt eius eligendi.",
                   image: null,
+                  id:123654789
                 },
               ],
             },
@@ -68,6 +79,7 @@ const Sidebar = () => {
                   infoText:
                     "some informations text Lorem ipsum dolor sit amet consectetur",
                   image: null,
+                  id:44444444
                 },
               ],
             },
@@ -88,6 +100,7 @@ const Sidebar = () => {
                   description:
                     "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex sequi veniam nemo corporis maxime! Labore nesciunt adipisci perferendis, sed rem nemo dicta earum, sint, provident explicabo quo sunt eius eligendi.",
                   image: null,
+                  id:66666666
                 },
               ],
             },
@@ -100,7 +113,7 @@ const Sidebar = () => {
             id,
             content: {
               title: "",
-              image:null,
+              image: null,
               fAndq: [
                 {
                   question: "some question",
@@ -112,81 +125,101 @@ const Sidebar = () => {
           })
         );
         break;
-      
-         case 'INCLUDED / NOT-INCLUDED':
-          dispatch(
-            addIncludedAndNotIncluded({
-              id,
-              content: {
-                title: "Some title",
-                infoText:'some information text here',
-                includes: [
-                  {
-                    heading: "some question",
-                    description:
-                      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex sequi veniam nemo corporis maxime! Labore nesciunt adipisci perferendis, sed rem nemo dicta earum, sint, provident explicabo quo sunt eius eligendi.",
-                    image:null
-                    },
-                ],
+
+      case 'INCLUDED / NOT-INCLUDED':
+        dispatch(
+          addIncludedAndNotIncluded({
+            id,
+            content: {
+              title: "Some title",
+              infoText: 'some information text here',
+              includes: [
+                {
+                  heading: "some question",
+                  description:
+                    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex sequi veniam nemo corporis maxime! Labore nesciunt adipisci perferendis, sed rem nemo dicta earum, sint, provident explicabo quo sunt eius eligendi.",
+                  image: null,
+                  id:55555555
+                },
+              ],
+            },
+          })
+        );
+        break;
+      case "TESTIMONIALS":
+        dispatch(
+          addTestimonials({
+            id,
+            content: {
+              title: "Some title",
+              infoText: 'some information text here',
+              highlightedReview: {
+                name: "John wick",
+                address: 'New York, US',
+                description:
+                  "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex sequi veniam nemo corporis maxime! Labore nesciunt adipisci perferendis, sed rem nemo dicta earum, sint, provident explicabo quo sunt eius eligendi.",
+                image: null,
+                ratingValue: 4,
               },
-            })
-          );
-          break;
-          case "TESTIMONIALS":
-            dispatch(
-              addTestimonials({
-                id,
-                content: {
-                  title: "Some title",
-                  infoText:'some information text here',
-                  highlightedReview: {
-                    name: "John wick",
-                    address:'New York, US',
-                    description:
-                      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex sequi veniam nemo corporis maxime! Labore nesciunt adipisci perferendis, sed rem nemo dicta earum, sint, provident explicabo quo sunt eius eligendi.",
-                    image:null,
-                    ratingValue:4,
-                    },
 
-                  users: [
-                    {
-                      name: "some question",
-                      address:'New York, US',
-                      description:
-                        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex sequi veniam nemo corporis maxime! Labore nesciunt adipisci perferendis, sed rem nemo dicta earum, sint, provident explicabo quo sunt eius eligendi.",
-                      image:null,
-                      ratingValue:4,
-                      },
-                  ],
+              users: [
+                {
+                  name: "some question",
+                  address: 'New York, US',
+                  description:
+                    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex sequi veniam nemo corporis maxime! Labore nesciunt adipisci perferendis, sed rem nemo dicta earum, sint, provident explicabo quo sunt eius eligendi.",
+                  image: null,
+                  ratingValue: 4,
+                  id:33333333
                 },
-              })
-            );
-          break;
-          case "CALL TO ACTION":
-            dispatch(
-              addCallToAction({
-                id,
-                content: {
-                  title: "Some title",
-                  information: [
-                    {
-                      text: "some information provided",
-                      // icon : icon Name - [in future]
-                      },
-                  ],
-                  buttonText :'',
-                  advantages:[
-                    {
-                      text: "some advantage provided",
-                      // icon : icon Name - [in future]
-                      },
-                  ],
-                  infoText:'some information text here',
+              ],
+            },
+          })
+        );
+        break;
+      case "CALL TO ACTION":
+        dispatch(
+          addCallToAction({
+            id,
+            content: {
+              title: "Some title",
+              information: [
+                {
+                  text: "some information provided",
+                  // icon : icon Name - [in future]
+                },
+              ],
+              buttonText: '',
+              advantages: [
+                {
+                  text: "some advantage provided",
+                  // icon : icon Name - [in future]
+                },
+              ],
+              infoText: 'some information text here',
 
+            },
+          })
+        );
+        break;
+      case "FORM":
+        dispatch(
+          addForm({
+            id,
+            content: {
+              title: "Some title",
+              buttonText: 'Click me',
+              description: '[optional] Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum quas nobis saepe adipisci ratione iusto nisi voluptas dolor facere deserunt impedit eius quasi placeat non, soluta cupiditate tempore voluptates alias!',
+              inputs: [
+                {
+                  labelText: "some label text",
+                  placeholderText: "place holder text.....",
                 },
-              })
-            );
-          break;
+              ],
+            },
+          })
+        );
+        break;
 
 
 

@@ -1,15 +1,15 @@
 /* eslint-disable react/prop-types */
-import { useTheme } from '@emotion/react';
-import { Stack, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 
 
 
 const AboutImage = ({ image }) => {
+  const theme = useTheme()
   const [previewUrl, setPreviewUrl] = useState(null);
-
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   useEffect(() => {
     // If image is a File instance, create an object URL
     if (image && image instanceof File) {
@@ -29,7 +29,7 @@ const AboutImage = ({ image }) => {
       src={previewUrl || "/heroImage.jpg"}
       alt="services-img"
       style={{
-        width: "30rem",
+        width:isMobile?'100%' :"30rem",
         // height: "100%",
         aspectRatio:"1",
         objectFit: "fill",
@@ -40,7 +40,7 @@ const AboutImage = ({ image }) => {
 };
 
 
-const AboutUsSection = ({id,data}) => {
+const AboutUsSection = ({data,isFetchedTheme,fetchingThemeData}) => {
   const componentsValue = useSelector((state) => state.universalThemeReducer);
   const {theme: selectedTheme } = componentsValue;
   const theme = useTheme()
@@ -50,16 +50,16 @@ const AboutUsSection = ({id,data}) => {
     <Stack
       sx={{
         width: "100vw",
-        padding: "3rem 10rem",
+        padding: {md:"3rem 10rem",xs:"1rem"},
         bgcolor:
-        selectedTheme.background.section || theme.palette.background.section,
+      isFetchedTheme?fetchingThemeData?.background.section:  selectedTheme?.background.section || theme.palette.background.section,
   
       }}
     >
       <Typography
         variant="h3"
         mb={7}
-        color={selectedTheme.typography.subTitleColor}
+        color={isFetchedTheme?fetchingThemeData?.typography.subTitleColor: selectedTheme?.typography.subTitleColor}
         sx={{
           mx: "auto",
         }}
@@ -81,10 +81,7 @@ const AboutUsSection = ({id,data}) => {
           gap: "2rem",
           justifyContent: "center"
         }
-      
-      
-      
-      }
+       }
       >
 
         {
@@ -100,8 +97,12 @@ const AboutUsSection = ({id,data}) => {
               {/* -------------------------------- Heading + description----------------------------------------- */}
 
               <Stack textAlign={'center'} gap={1} mt={3}>
-                <Typography variant='h4'>{ele.heading || "heading"}</Typography>
-                <Typography variant='subtitle1'> {ele.description || "description"} </Typography>
+                <Typography variant='h4' sx={{
+                  color:isFetchedTheme?fetchingThemeData.typography.headingColor:selectedTheme?.typography.headingColor
+                }}>{ele.heading || "heading"}</Typography>
+                <Typography variant='subtitle1' sx={{
+                  color:isFetchedTheme?fetchingThemeData.typography.paragraphColor:selectedTheme?.typography.paragraphColor
+                }}> {ele.description || "description"} </Typography>
 
               </Stack>
 

@@ -2,14 +2,16 @@
 import { CloudUpload, Delete } from '@mui/icons-material';
 import { Box, CircularProgress, IconButton, Stack, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { changeServicesListImage } from '../redux/reducers/universalStyles';
 import { deleteImageFromFirebaseStorage } from '../utils/imageupload/deleteImageFromFirebaseStorage';
 import { uploadImageOnFirebaseStorage } from '../utils/imageupload/firebase-storage-upload';
 
-const ImageUpload = ({ downloadURL, id, handleToSetDownloadURL,type ,index}) => {
-    console.log('index:', index)
+const ImagesUploadForMultiple = ({ downloadURL, id, componentId}) => {
     const [loading, setLoading] = useState(false);
     const [fileName, setFileName] = useState('')
     const theme = useTheme()
+    const dispatch = useDispatch()
     
     // Define your websiteId (can be dynamic as needed)
     const websiteId = "my-website";
@@ -30,15 +32,12 @@ const ImageUpload = ({ downloadURL, id, handleToSetDownloadURL,type ,index}) => 
                 const downloadURL = await uploadImageOnFirebaseStorage(
                     base64Image,
                     websiteId,
-                    id //id as unique file name
+                    componentId //id as unique file name
                 );
                 // Save upload details in state
-                if(type == 'single'){
-
-                    handleToSetDownloadURL(downloadURL)
-                }else{
-                    handleToSetDownloadURL(downloadURL,index)
-                }
+                dispatch(
+                    changeServicesListImage({ id, componentId, content: downloadURL})
+                  );
             } catch (error) {
                 console.error("Upload failed:", error);
             } finally {
@@ -63,15 +62,12 @@ const ImageUpload = ({ downloadURL, id, handleToSetDownloadURL,type ,index}) => 
         if (!id) return;
         try {
             setLoading(true);
-            await deleteImageFromFirebaseStorage(websiteId, id)
+            await deleteImageFromFirebaseStorage(websiteId, componentId)
             // id as uniquefile name);
             // Clear the upload details after successful deletion
-            if(type == 'single'){
-                handleToSetDownloadURL(null)
-            }else{
-
-                handleToSetDownloadURL(null,index)
-            }
+            dispatch(
+                changeServicesListImage({ id, componentId, content: null })
+              );
 
         } catch (error) {
             console.error("Deletion failed:", error);
@@ -100,8 +96,8 @@ const ImageUpload = ({ downloadURL, id, handleToSetDownloadURL,type ,index}) => 
                         <Delete />
                     </IconButton>
                 </Stack>
-            ) : 
-            <Box
+            ) :
+             <Box
                 // elevation={3}
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={handleFileDrop}
@@ -163,11 +159,14 @@ const ImageUpload = ({ downloadURL, id, handleToSetDownloadURL,type ,index}) => 
 
 
 
-            </Box>}
+            </Box>
+            
+            
+            }
         </>
 
 
     )
 }
 
-export default ImageUpload
+export default ImagesUploadForMultiple

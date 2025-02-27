@@ -27,7 +27,7 @@ const UserImage = ({ image }) => {
   return (
     <img
       src={previewUrl || "/heroImage.jpg"}
-      alt="services-img"
+      alt="user-img"
       style={{
         width: "100%",
         height: "100%",
@@ -38,7 +38,8 @@ const UserImage = ({ image }) => {
   );
 };
 
-const TestimonialSection = ({ data }) => {
+
+const TestimonialSection = ({data,isFetchedTheme,fetchingThemeData}) => {
   const [expanded, setExpanded] = useState(false);
   const [expandedText, setExpandedText] = useState({});
   const [hasOverflow, setHasOverflow] = useState({});
@@ -85,9 +86,9 @@ const TestimonialSection = ({ data }) => {
     <Stack
       sx={{
         width: "100vw",
-        padding: "3rem 10rem",
+        padding: {md:"3rem 10rem",xs:"1rem"},
         bgcolor:
-          selectedTheme.background.section || theme.palette.background.section,
+          isFetchedTheme?fetchingThemeData?.background.section: selectedTheme?.background.section || theme.palette.background.section,
       }}
     >
       <Typography
@@ -95,7 +96,7 @@ const TestimonialSection = ({ data }) => {
         mb={1}
         sx={{
           mx: "auto",
-          color: selectedTheme.typography.subTitleColor,
+          color: isFetchedTheme?fetchingThemeData?.typography.subTitleColor: selectedTheme?.typography.subTitleColor,
         }}
       >
         {data?.content?.title || "People are saying"}
@@ -106,7 +107,7 @@ const TestimonialSection = ({ data }) => {
         mb={4}
         sx={{
           mx: "auto",
-          color: selectedTheme.typography.paragraphColor,
+          color:isFetchedTheme?fetchingThemeData?.typography.paragraphColor: selectedTheme?.typography.paragraphColor,
         }}
       >
         {data?.content?.infoText || "4141+ Lorem ipsum dolor sit amet."}
@@ -114,24 +115,24 @@ const TestimonialSection = ({ data }) => {
 
       <Box
         sx={{
-          display: "flex",
+          display: {md:"flex",xs:"block"},
           gap: "2rem",
         }}
       >
         {/* Highlighted Review (Left Container) */}
         <Box
           sx={{
-            width: "30%",
+            width:{md: "30%",xs:'100%'},
             display: "flex",
             justifyContent: "center",
             borderRadius: "12px",
-            bgcolor: selectedTheme.background.section || theme.palette.background.section,
+            bgcolor: isFetchedTheme?fetchingThemeData?.background.section: selectedTheme?.background.section || theme.palette.background.section,
           }}
         >
           <Stack
             gap={3}
             sx={{
-              bgcolor: selectedTheme.background.paper || theme.palette.background.paper,
+              bgcolor: isFetchedTheme?fetchingThemeData.background.paper: selectedTheme?.background.paper || theme.palette.background.paper,
               borderRadius: "12px",
               height: expanded ? "75%" : "70vh",
               padding: "1.5rem 1rem",
@@ -142,13 +143,13 @@ const TestimonialSection = ({ data }) => {
                 padding: "0.3rem 1rem",
                 borderRadius: "8px",
                 width: "fit-content",
-                bgcolor: selectedTheme.background.paper || theme.palette.background.paper,
+                bgcolor:isFetchedTheme?fetchingThemeData.background.paper: selectedTheme?.background.paper || theme.palette.background.paper,
                 mx: "auto",
               }}
             >
               <Typography
                 variant="subtitle1"
-                sx={{ color: selectedTheme.typography.paragraphColor }}
+                sx={{ color:isFetchedTheme?fetchingThemeData?.typography.paragraphColor: selectedTheme?.typography.paragraphColor }}
               >
                 Highlighted review
               </Typography>
@@ -170,7 +171,7 @@ const TestimonialSection = ({ data }) => {
                 variant="h4"
                 sx={{
                   fontWeight: "600",
-                  color: selectedTheme.typography.headingColor,
+                  color: isFetchedTheme?fetchingThemeData?.typography.headingColor: selectedTheme?.typography.headingColor,
                 }}
               >
                 {data?.content?.highlightedReview?.name || "John wick"}
@@ -178,7 +179,7 @@ const TestimonialSection = ({ data }) => {
               <Typography
                 variant="subtitle1"
                 sx={{
-                  color: selectedTheme.typography.paragraphColor,
+                  color:isFetchedTheme?fetchingThemeData?.typography.paragraphColor: selectedTheme?.typography.paragraphColor,
                 }}
               >
                 {data?.content?.highlightedReview?.address || "New York"}
@@ -199,7 +200,7 @@ const TestimonialSection = ({ data }) => {
                 WebkitBoxOrient: "vertical",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
-                color: selectedTheme.typography.paragraphColor,
+                color: isFetchedTheme?fetchingThemeData?.typography.paragraphColor: selectedTheme?.typography.paragraphColor,
               }}
             >
               {data?.content?.highlightedReview?.description ||
@@ -213,7 +214,7 @@ const TestimonialSection = ({ data }) => {
                 textTransform: "none",
                 fontSize: "1rem",
                 placeSelf: "end",
-                color: selectedTheme.button.buttonBackground,
+                color: isFetchedTheme?fetchingThemeData?.button.buttonBackground: selectedTheme?.button.buttonBackground,
               }}
             >
               {expanded ? "See Less" : "See More"}
@@ -244,7 +245,7 @@ const TestimonialSection = ({ data }) => {
                     variant="h4"
                     sx={{
                       fontWeight: "600",
-                      color: selectedTheme.typography.headingColor,
+                      color: isFetchedTheme?fetchingThemeData?.typography.headingColor: selectedTheme?.typography.headingColor,
                     }}
                   >
                     {ele.name}
@@ -252,7 +253,7 @@ const TestimonialSection = ({ data }) => {
                   <Typography
                     variant="subtitle1"
                     sx={{
-                      color: selectedTheme.typography.paragraphColor,
+                      color: isFetchedTheme?fetchingThemeData?.typography.paragraphColor: selectedTheme?.typography.paragraphColor,
                     }}
                   >
                     {ele.address}
@@ -271,7 +272,7 @@ const TestimonialSection = ({ data }) => {
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   mt: "0.45rem",
-                  color: selectedTheme.typography.paragraphColor,
+                  color:isFetchedTheme? fetchingThemeData?.typography.paragraphColor: selectedTheme?.typography.paragraphColor,
                 }}
               >
                 {ele.description}
@@ -285,7 +286,7 @@ const TestimonialSection = ({ data }) => {
                     textTransform: "none",
                     fontSize: "0.9rem",
                     placeSelf: "end",
-                    color: selectedTheme.button.buttonBackground,
+                    color:isFetchedTheme? fetchingThemeData?.button.buttonBackground: selectedTheme?.button.buttonBackground,
                   }}
                 >
                   {expandedText[index] ? "See Less" : "See More"}

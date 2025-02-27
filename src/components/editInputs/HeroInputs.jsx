@@ -2,6 +2,7 @@
 import React, { useEffect } from "react";
 import {
   Box,
+  Button,
   Checkbox,
   FormControl,
   FormControlLabel,
@@ -13,8 +14,9 @@ import {
   useTheme,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { changeHero } from "../../redux/reducers/universalStyles";
+import { addScheduleItem, changeHero, changeHeroScheduleList, removeScheduleItem, setHeroImage } from "../../redux/reducers/universalStyles";
 import ImageUpload from "../ImageUpload";
+import ScheduleSectionInputs from "./ScheduleSectionInputs";
 
 const HeroInputs = ({ id }) => {
   const dispatch = useDispatch();
@@ -24,16 +26,18 @@ const HeroInputs = ({ id }) => {
   const heroState = useSelector((state) => state.universalThemeReducer.hero);
   const selectedHero = heroState.find((ele) => ele.id === id);
   // Always define content. If not found, use a default empty object.
-  const content = selectedHero ? selectedHero.content : {
-    file: null,
-    value: "image",
-    title: "",
-    description: "",
-    buttonText: "",
-    infoText: "",
-    embededLink: "",
-    scheduleAdded: false,
-  };
+  const content = selectedHero
+    ? selectedHero.content
+    : {
+      file: null,
+      value: "image",
+      title: "",
+      description: "",
+      buttonText: "",
+      infoText: "",
+      embededLink: "",
+      scheduleAdded: false,
+    };
 
   // Generic change handler
   const handleChange = (e) => {
@@ -70,6 +74,55 @@ const HeroInputs = ({ id }) => {
       dispatch(changeHero({ id, content: { ...content, file: null } }));
     }
   }, [content.value, content.embededLink, content.file, dispatch, id]);
+
+
+
+  const handleItemFieldChange = (e, index, field) => {
+
+    dispatch(changeHeroScheduleList({ id, index, content: e.target.value, field }))
+  }
+
+  const handleScheduleImageChange = (e, index) => {
+    const file = e.target.files[0]
+    if (file) {
+      dispatch(changeHeroScheduleList({ id, index, content: file, field: 'image' }))
+    }
+  }
+
+
+  const handleScheduleImageDrop = (e, index) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      dispatch(
+        changeHeroScheduleList({ id, index, content: file, field: "image" })
+      );
+    }
+  };
+
+  const handleAddScheduleItem = () => {
+    dispatch(
+      addScheduleItem({
+        id,
+        item: {
+          labelText: 'eg, TIME',
+          infoText: '03:15 PM',
+          image: null          // icon in future
+
+        },
+      })
+    );
+  };
+
+  // --- Handler for Deleting a Service Item ---
+  const handleDeleteScheduleItem = (index) => {
+    dispatch(removeScheduleItem({ id, index }));
+  };
+
+
+  const handleToSetDownloadURL = (downloadURL) => {
+    dispatch(setHeroImage({ id, content: downloadURL }))
+  }
 
   return (
     <>
@@ -171,9 +224,11 @@ const HeroInputs = ({ id }) => {
             <Box>
               <Typography variant="subtitle2">Add Image</Typography>
               <ImageUpload
-                file={content.file}
-                handleFileDrop={handleFileDrop}
-                handleFileUpload={handleFileUpload}
+                downloadURL={content.downloadURL}
+                handleToSetDownloadURL={handleToSetDownloadURL}
+                id={id}
+                type = 'single'
+                index = {1111}
               />
             </Box>
           ) : (
@@ -202,9 +257,44 @@ const HeroInputs = ({ id }) => {
                   inputProps={{ "aria-label": "controlled" }}
                 />
               }
-              label="Add schedule in my website"
+              label="Add schedule"
             />
           </Box>
+
+          {content.scheduleAdded &&
+
+
+
+            content?.scheduleData?.map((ele, index) =>
+              <ScheduleSectionInputs key={ele.id || index} theme={theme} index={index} item={ele} handleItemFieldChange={handleItemFieldChange} handleScheduleImageChange={handleScheduleImageChange} handleScheduleImageDrop={handleScheduleImageDrop} handleDeleteScheduleItem={handleDeleteScheduleItem} />
+            )
+
+
+
+
+
+
+
+
+          }
+
+          {content.scheduleAdded && <Button
+            onClick={handleAddScheduleItem}
+            sx={{
+              width: "50%",
+              mx: "auto",
+              mt: 2,
+              bgcolor: theme.palette.primary.main,
+              color: theme.palette.primary.contrastText,
+            }}
+          >
+            Add Item
+          </Button>
+          }
+
+
+
+
         </Stack>
       )}
     </>

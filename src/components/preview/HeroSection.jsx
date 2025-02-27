@@ -1,52 +1,55 @@
 /* eslint-disable react/prop-types */
 import { Box, Button, Stack, Typography, useTheme } from "@mui/material";
-import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import ScheduleComponent from "../ScheduleComponent";
 
-const HeroSection = ({ id,data={} }) => {
+const HeroSection = ({ id, data = {} ,isFetchedTheme,fetchingThemeData}) => {
   console.log('herosection id:', id)
   const theme = useTheme();
-  const [previewUrl, setPreviewUrl] = useState(null);
   const componentsValue = useSelector((state) => state.universalThemeReducer);
-  const {theme: selectedTheme } = componentsValue;
+  const { theme: selectedTheme } = componentsValue;
+  
   //  const [herodata.content,setHerodata.content] = useState(data.content)
 
-
+    
 
 
 
   return (
     <Stack
-      direction={"row"}
+
+      // direction={"row"}
       gap={2}
       sx={{
         width: "100vw",
-        padding: "3rem 10rem",
+        padding: { md: "3rem 10rem", xs: "1rem" },
         height: "85vh",
         //  ----------------------- Background value is Dynamic---
-        bgcolor: selectedTheme.background.default,
+        bgcolor: isFetchedTheme ?fetchingThemeData?.background.default:selectedTheme?.background.default,
+        display: "flex",
+        // bgcolor:"red",
+        flexDirection: { xs: "column", md: 'row' }
       }}
     >
       {/* ----------------------------- Left Cotents------------------------------ */}
 
       <Stack
         sx={{
-          width: "50%",
+          width: { xs: '100%', md: "50%" },
         }}
       >
         {/* ---------------------Contents Box-------------------- */}
         <Stack direction={"column"} gap={1} mt={5}>
           {/* ---------------------Title-------------------------- */}
-          <Typography variant="h2" color={selectedTheme.typography?.titleColor}>
+          <Typography variant="h2" color={ isFetchedTheme?fetchingThemeData?.typography.titleColor:selectedTheme?.typography?.titleColor}>
             {data?.content?.title || "Title here"}
           </Typography>
-    
+
 
           {/* ---------------------paragraph-------------------------- */}
           <Typography
             variant="subtitle1"
-            color={selectedTheme.typography?.paragraphColor}
+            color={isFetchedTheme ? fetchingThemeData?.typography.paragraphColor:selectedTheme?.typography?.paragraphColor}
           >
             {data?.content?.description ||
               "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt quisquam fugit nam sequi ex iste ratione, quaerat, architecto sit facilis maxime adipisci obcaecati suscipit amet, temporibus iusto accusantium eligendi impedit!"}
@@ -57,9 +60,10 @@ const HeroSection = ({ id,data={} }) => {
             <Button
               variant="customButton"
               sx={{
-                color: selectedTheme.button?.buttonTextColor,
-                bgcolor: selectedTheme.button?.buttonBackground,
-                fontWeight: "bold"
+                color: isFetchedTheme?fetchingThemeData?.button.buttonTextColor: selectedTheme?.button?.buttonTextColor,
+                bgcolor: isFetchedTheme?fetchingThemeData?.button.buttonBackground: selectedTheme?.button?.buttonBackground,
+                fontWeight: "bold",
+                width: { xs: '100%', md: '18rem' }
               }}
             >
               {data?.content?.buttonText || "Click me"}
@@ -70,7 +74,7 @@ const HeroSection = ({ id,data={} }) => {
             variant="body2"
             ml={2}
             mt={1}
-            color={selectedTheme.typography?.paragraphColor}
+            color={isFetchedTheme?fetchingThemeData?.typography.paragraphColor: selectedTheme?.typography?.paragraphColor}
           >
             {data?.content?.infoText || "some info text here..."}
           </Typography>
@@ -80,7 +84,7 @@ const HeroSection = ({ id,data={} }) => {
           }}>
 
             {
-              data?.content?.scheduleAdded && <ScheduleComponent iconBackground={selectedTheme.icon?.iconBackground} iconColor={selectedTheme.icon?.iconColor} paperColor={selectedTheme.background?.paper} iconType={selectedTheme.icon?.selectedIconType} />
+              data?.content?.scheduleAdded && <ScheduleComponent iconBackground={selectedTheme?.icon?.iconBackground} iconColor={selectedTheme?.icon?.iconColor} paperColor={selectedTheme?.background?.paper} iconType={selectedTheme?.icon?.selectedIconType} data={data?.content?.scheduleData} />
             }
           </Box>
 
@@ -93,14 +97,16 @@ const HeroSection = ({ id,data={} }) => {
       <Stack
         variant="center"
         sx={{
-          width: "50%",
+          width: { xs: '100%', md: "50%" },
+          // bgcolor:'red',
+          height: { xs: "100%" }
         }}
       >
-        {/* ------------------- Image or Embeded-------------------- */}
+        {/* ------------------- Image or Embedded-------------------- */}
 
         {data?.content?.value == "image" ? (
           <img
-            src={previewUrl || "/heroImage.jpg"}
+            src={data?.content?.downloadURL || "/heroImage.jpg"}
             alt="hero-img"
             style={{
               height: "80%",

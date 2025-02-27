@@ -35,7 +35,7 @@ const BenefitsImages = ({ image }) => {
 };
 
 
-const BenefitesSection = ({data}) => {
+const BenefitesSection = ({data,isFetchedTheme,fetchingThemeData}) => {
     const theme = useTheme();
     const componentsValue = useSelector((state) => state.universalThemeReducer);
     const { theme: selectedTheme } = componentsValue;
@@ -45,9 +45,9 @@ const BenefitesSection = ({data}) => {
         <Stack
             sx={{
                 width: "100vw",
-                padding: "3rem 10rem",
+                padding: {md:"3rem 10rem",xs:"1rem"},
                 bgcolor:
-                    selectedTheme.background.section || theme.palette.background.section,
+                    isFetchedTheme?fetchingThemeData?.background.section: selectedTheme?.background.section || theme.palette.background.section,
             }}
         >
 
@@ -56,7 +56,7 @@ const BenefitesSection = ({data}) => {
                 mb={1}
                 sx={{
                     mx: "auto",
-                    color: selectedTheme.typography.subTitleColor,
+                    color: isFetchedTheme? fetchingThemeData?.typography.subTitleColor: selectedTheme?.typography.subTitleColor,
                 }}
             >
                 {data?.content?.title || ' Benefits Title'}
@@ -67,7 +67,7 @@ const BenefitesSection = ({data}) => {
                 mb={4}
                 sx={{
                     mx: "auto",
-                    color: selectedTheme.typography.headingColor,
+                    color: isFetchedTheme?fetchingThemeData?.typography.headingColor: selectedTheme?.typography.headingColor,
                     fontWeight: "bold"
 
                 }}
@@ -79,10 +79,10 @@ const BenefitesSection = ({data}) => {
 
             <Box sx={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
+                gridTemplateColumns: {md:'repeat(3, 1fr)',xs:'repeat(2, 1fr)'},
                 justifyContent: 'center',
-                gap: "2rem",
-                padding: '2rem'
+                gap: {md:"2rem",xs:'0.5rem'},
+                padding:{md: '2rem',xs:"0.5rem"}
 
             }}>
                 {data?.content?.benefits?.map((ele, index) =>
@@ -99,7 +99,7 @@ const BenefitesSection = ({data}) => {
                         key={index}>
                         <Box sx={{
                             height: "70%",
-                            width: "17rem",
+                            width: {md:"17rem",xs:"100%"},
                             display: 'flex',
                             flexDirection: "column",
                             justifyContent: 'center',

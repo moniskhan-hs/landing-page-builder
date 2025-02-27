@@ -40,6 +40,8 @@ const initialState = {
   testimonials: [],
 
   callToAction: [],
+  
+  form:[]
 
 
 };
@@ -63,6 +65,43 @@ export const universalThemeReducer = createSlice({
       state.hero = state.hero.filter((ele) => ele.id !== id);
     },
 
+    changeHeroScheduleList: (state, action) => {
+      const { id, index, content, field } = action.payload;
+      const scheduleComp = state.hero.find((ele) => ele.id === id);
+      if (
+        scheduleComp &&
+        scheduleComp.content &&
+        Array.isArray(scheduleComp.content.scheduleData)
+      ) {
+        scheduleComp.content.scheduleData[index][field] = content;
+      }
+    },
+
+    addScheduleItem: (state, action) => {
+      const { id, item } = action.payload;
+      const scheduleComp = state.hero.find((ele) => ele.id === id);
+      if (
+        scheduleComp &&
+        scheduleComp.content &&
+        Array.isArray(scheduleComp.content.scheduleData)
+      ) {
+        // Assign a unique id to the new item if not provided
+        item.id = item.id || Date.now();
+        scheduleComp.content.scheduleData.push(item);
+      }
+    },
+    removeScheduleItem: (state, action) => {
+      const { id, index } = action.payload;
+      const scheduleComp = state.hero.find((ele) => ele.id === id);
+      if (
+        scheduleComp &&
+        scheduleComp.content &&
+        Array.isArray(scheduleComp.content.scheduleData)
+      ) {
+        scheduleComp.content.scheduleData.splice(index, 1);
+      }
+    },
+
     changeHero: (state, action) => {
       const { id, content } = action.payload;
       const heroComponent = state.hero.find((ele) => ele.id === id);
@@ -72,6 +111,14 @@ export const universalThemeReducer = createSlice({
       }
     },
 
+    setHeroImage:(state,action)=>{
+      const {id,content} = action.payload;
+      const heroComponent = state.hero.find((ele) => ele.id === id);
+  if(heroComponent){
+    heroComponent.content.downloadURL=content
+  }
+
+    },
     // ------------------------------------------------- S E R V I C E S -------------------------------------
 
     addService: (state, action) => {
@@ -94,6 +141,22 @@ export const universalThemeReducer = createSlice({
         serviceComp.content.services[index][field] = content;
       }
     },
+    changeServicesListImage: (state, action) => {
+      const { id, serviceId, content, field } = action.payload;
+      const serviceComp = state.services.find(ele => ele.id === id);
+      
+      if (serviceComp?.content?.services) {
+        serviceComp.content.services = serviceComp.content.services.map(service => {
+          if (service.id === serviceId) {
+            return { ...service, [field]: content };
+          }
+          return service;
+        });
+      }
+    },
+
+
+
     addServiceItem: (state, action) => {
       const { id, service } = action.payload;
       const serviceComp = state.services.find((ele) => ele.id === id);
@@ -180,6 +243,21 @@ export const universalThemeReducer = createSlice({
       }
     },
 
+    changeBenefitListImage: (state, action) => {
+      const { id, benefitId, content, field } = action.payload;
+      const benefitComp = state.benefits.find(ele => ele.id === id);
+      
+      if (benefitComp?.content?.benefits) {
+        benefitComp.content.benefits = benefitComp.content.benefits.map(ele => {
+          if (ele.id === benefitId) {
+            return { ...ele, [field]: content };
+          }
+          return ele;
+        });
+      }
+    },
+
+
     changeBenefits: (state, action) => {
       const { id, content, type } = action.payload;
       const component = state.benefits.find((ele) => ele.id === id);
@@ -240,6 +318,20 @@ export const universalThemeReducer = createSlice({
         Array.isArray(aboutComp.content.abouts)
       ) {
         aboutComp.content.abouts.splice(index, 1);
+      }
+    },
+
+    changeAboutListImage: (state, action) => {
+      const { id, aboutId, content, field } = action.payload;
+      const comp = state.about.find(ele => ele.id === id);
+      
+      if (comp?.content?.abouts) {
+        comp.content.abouts = comp.content.abouts.map(ele => {
+          if (ele.id === aboutId) {
+            return { ...ele, [field]: content };
+          }
+          return ele;
+        });
       }
     },
     changeAbout: (state, action) => {
@@ -348,6 +440,20 @@ export const universalThemeReducer = createSlice({
       }
     },
 
+
+    changeListImage: (state, action) => {
+      const { id, itemId, content, field } = action.payload;
+      const comp = state.includedNotIncluded.find(ele => ele.id === id);
+      
+      if (comp?.content?.includes) {
+        comp.content.includes = comp.content.includes.map(ele => {
+          if (ele.id === itemId) {
+            return { ...ele, [field]: content };
+          }
+          return ele;
+        });
+      }
+    },
     addIncludesItem: (state, action) => {
       const { id, include } = action.payload;
       const includesComp = state.includedNotIncluded.find(
@@ -403,6 +509,24 @@ export const universalThemeReducer = createSlice({
         testimonialsComp.content.users[index][field] = content;
       }
     },
+
+
+    changeTestimonialListImage: (state, action) => {
+      const { id, userId, content, field } = action.payload;
+      const userComp = state.testimonials.find(ele => ele.id === id);
+      
+      if (userComp?.content?.users) {
+        userComp.content.users = userComp.content.users.map(ele => {
+          if (ele.id === userId) {
+            return { ...ele, [field]: content };
+          }
+          return ele;
+        });
+      }
+    },
+
+
+
     addTestimonialItem: (state, action) => {
       const { id, user } = action.payload;
       const testimonialComp = state.testimonials.find((ele) => ele.id === id);
@@ -513,8 +637,74 @@ export const universalThemeReducer = createSlice({
           callToActionComp.content.buttonText = content;
         } 
       }
+    },
+
+
+    addForm : (state,action)=>{
+  state.form.push(action.payload)
+    },
+
+    removeForm : (state,action)=>{
+      const id = action.payload;
+      state.form= state.form.filter((ele)=>ele.id  !== id)
+    },
+
+    changeInputsList : (state,action)=>{
+    const {id,index,content,field} = action.payload
+    const inputComp = state.form.find((ele) => ele.id === id);
+    if (
+      inputComp &&
+      inputComp.content &&
+      Array.isArray(inputComp.content.inputs)
+    ) {
+      inputComp.content.inputs[index][field] = content;
+    }
 
     },
+    addInputItem: (state, action) => {
+      const { id, input } = action.payload;
+      const inputComp = state.form.find((ele) => ele.id === id);
+      if (
+        inputComp &&
+        inputComp.content &&
+        Array.isArray(inputComp.content.inputs)
+      ) {
+        // Assign a unique id to the new service if not provided
+        input.id = input.id || Date.now();
+        inputComp.content.inputs.push(input);
+      }
+    },
+    removeInputItem: (state, action) => {
+      const { id, index } = action.payload;
+      const inputComp = state.form.find((ele) => ele.id === id);
+      if (
+        inputComp &&
+        inputComp.content &&
+        Array.isArray(inputComp.content.inputs)
+      ) {
+        inputComp.content.inputs.splice(index, 1);
+      }
+    },
+
+    changeForm: (state, action) => {
+      const { id, content, type } = action.payload;
+      const formComp = state.form.find((ele) => ele.id === id);
+      if (formComp) {
+        if (type === "title") {
+          formComp.content.title = content;
+        } else if (type === "content") {
+          formComp.content.inputs = content;
+        }else if (type === 'buttonText'){
+          formComp.content.buttonText = content
+        }else if (type === 'description'){
+          formComp.content.description = content
+        }
+      }
+    },
+
+
+
+
 
   },
 });
@@ -523,25 +713,32 @@ export const {
   changeTheme,
   addHero,
   changeHero,
+  setHeroImage,
   removeHero,
+  changeHeroScheduleList,
+  addScheduleItem,
+  removeScheduleItem,
   addService,
   changeServices,
   removeServiceItem,
   addServiceItem,
   removeService,
   changeServicesList,
+  changeServicesListImage,
   addBenefit,
   changeBenefits,
   removeBenefit,
   addBenefitsItem,
   removeBenefitItem,
   changeBenefitsList,
+  changeBenefitListImage,
   addAbout,
   changeAbout,
   removeAbout,
   changeAboutList,
   addAboutItem,
   removeAboutItem,
+  changeAboutListImage,
   addFAQ,
   removeFAQ,
   removeFAQItem,
@@ -552,9 +749,11 @@ export const {
   removeIncludedNotIncluded,
   changeIncludedNotIncluded,
   changeIncludedNotIncludedList,
+  changeListImage,
   addIncludesItem,
   removeIncludeItem,
-  changeTestimonials, removeTestimonialItem, addTestimonialItem, changeTestimonialsList, removeTestimonials, addTestimonials,
-  addCallToAction,addCallToActionItem,changeCallToAction,changeCallToActionList,removeCallToAction,removeCallToActionItem
+  changeTestimonials, removeTestimonialItem, addTestimonialItem, changeTestimonialsList, removeTestimonials, addTestimonials,changeTestimonialListImage,
+  addCallToAction,addCallToActionItem,changeCallToAction,changeCallToActionList,removeCallToAction,removeCallToActionItem,
+  addForm, removeForm,changeForm,changeInputsList,addInputItem,removeInputItem
 
 } = universalThemeReducer.actions;

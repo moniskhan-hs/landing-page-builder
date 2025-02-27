@@ -35,7 +35,7 @@ const ServiceImage = ({ image }) => {
   );
 };
 
-const ServicesOrOfferingSection = ({id,data}) => {
+const ServicesOrOfferingSection = ({id,data={},isFetchedTheme,fetchingThemeData}) => {
   console.log('data in services and offering:', data)
   const componentsValue = useSelector((state) => state.universalThemeReducer);
   const {theme: selectedTheme } = componentsValue;
@@ -45,16 +45,15 @@ const ServicesOrOfferingSection = ({id,data}) => {
     <Stack
       sx={{
         width: "100vw",
-        padding: "3rem 10rem",
+        padding: {md:"3rem 10rem",xs:'1rem'},
         height: "85vh",
         //  ----------------------- Background value is Dynamic---
-        bgcolor:
-          selectedTheme.background.section || theme.palette.background.section,
+        bgcolor: isFetchedTheme ? fetchingThemeData?.background.section :selectedTheme?.background.section || theme.palette.background.section,
       }}
     >
       <Typography
         variant="h3"
-        color={selectedTheme.typography.subTitleColor}
+        color={isFetchedTheme? fetchingThemeData?.typography.subTitleColor: selectedTheme.typography.subTitleColor}
         mb={4}
       >
         {data?.content?.title || "Your services title"}
@@ -66,18 +65,19 @@ const ServicesOrOfferingSection = ({id,data}) => {
           data?.content?.services?.map((ele, index) => (
             <Stack
               key={index}
-              direction={"row"}
+              direction={{md:"row",xs:'column'}}
               sx={{
                 width: "100%",
-                height: "11rem",
+                height: {md:"11rem",xs:"auto"},
                 borderRadius: "12px",
-                bgcolor: selectedTheme.background.paper || theme.palette.background.paper,
-                my: 1,
+                bgcolor: isFetchedTheme? fetchingThemeData?.background.paper: selectedTheme?.background.paper || theme.palette.background.paper,
+                my: 3,
+             
               }}
             >
               <Box
                 sx={{
-                  width: "22%",
+                  width: {md:"22%",xs:'100%'},
                   padding: "1%",
                 }}
               >
@@ -86,7 +86,7 @@ const ServicesOrOfferingSection = ({id,data}) => {
               <Box
                 sx={{
                   flex: 1,
-                  padding: "1%",
+             padding:"1rem"
                 }}
               >
                 <Stack>
@@ -94,7 +94,7 @@ const ServicesOrOfferingSection = ({id,data}) => {
                 - */}
                   <Typography
                     variant="h4"
-                    color={selectedTheme.typography.headingColor}
+                    color={isFetchedTheme? fetchingThemeData?.typography.headingColor: selectedTheme?.typography.headingColor}
                     mb={2}
                   >
                     {ele.heading || "heading"}
@@ -102,7 +102,7 @@ const ServicesOrOfferingSection = ({id,data}) => {
                   {/* ------------sub heading or paragraph----------------------- */}
                   <Typography
                     variant="subtitle1"
-                    color={selectedTheme.typography.paragraphColor}
+                    color={ isFetchedTheme? fetchingThemeData?.typography.paragraphColor: selectedTheme?.typography.paragraphColor}
                   >
                     {ele.description || "description"}
                   </Typography>

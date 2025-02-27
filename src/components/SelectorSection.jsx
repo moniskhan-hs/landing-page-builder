@@ -26,6 +26,7 @@ import {
   removeBenefit,
   removeCallToAction,
   removeFAQ,
+  removeForm,
   removeHero,
   removeIncludedNotIncluded,
   removeService,
@@ -86,6 +87,9 @@ const SelectorSection = ({
         break;
       case "CALL TO ACTION":
         dispatch(removeCallToAction(id));
+        break;
+      case "FORM":
+        dispatch(removeForm(id));
         break;
       default:
         dispatch(removeComponent(id));

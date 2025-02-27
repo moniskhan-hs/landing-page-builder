@@ -1,9 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { addMultiComponentReducer } from "./reducers/addMultiComponenet";
 import { sectionStateReducer } from "./reducers/sectionsState";
+import { selectedComponentReducer } from "./reducers/selectedComponent";
 import { sidebarMunuReducer } from "./reducers/sidebarMenus";
 import { universalThemeReducer } from "./reducers/universalStyles";
-import { selectedComponentReducer } from "./reducers/selectedComponent";
+import { websiteIdReducer } from "./reducers/websiteId";
 
 
 export const store = configureStore({
@@ -12,7 +13,8 @@ export const store = configureStore({
         [sectionStateReducer.name]: sectionStateReducer.reducer,
         [addMultiComponentReducer.name]: addMultiComponentReducer.reducer,
         [universalThemeReducer.name]: universalThemeReducer.reducer,
-        [selectedComponentReducer.name]: selectedComponentReducer.reducer
+        [selectedComponentReducer.name]: selectedComponentReducer.reducer,
+        [websiteIdReducer.name]: websiteIdReducer.reducer
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware()
 })

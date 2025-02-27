@@ -1,7 +1,8 @@
-import { Box, Button, Stack, Typography, useTheme } from "@mui/material";
+import { Box, Stack, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PreviewContainer from "../components/PreviewContainer";
+import SaveAndApplyButton from "../components/SaveAndApplyButton";
 import SelectorSection from "../components/SelectorSection";
 import SharableContentbar from "../components/SharableContentbar";
 import { changeInSectionState } from "../redux/reducers/sectionsState";
@@ -10,11 +11,9 @@ const PlayGround = () => {
   const theme = useTheme();
   // const menuItemsState = useSelector((state) => state.sidebarMenuReducer);
   const menuItemsState = useSelector((state) => state.addMultiComponentReducer);
-
   const [selectedComponents, setSelectedComponents] = useState([]);
   const dispatch = useDispatch()
-  const [isFullPreviewed,setIsFullPreviewed] = useState(false)
-
+  const [isFullPreviewed, setIsFullPreviewed] = useState(false)
 
   useEffect(() => {
     const updatedSelected = menuItemsState.filter((ele) => ele.isSelected);
@@ -22,7 +21,8 @@ const PlayGround = () => {
     console.log('updatedSelected:', updatedSelected)
     dispatch(changeInSectionState(updatedSelected));
 
-  }, [menuItemsState]);
+  }, [menuItemsState, dispatch]);
+
 
   const [draggedIndex, setDraggedIndex] = useState(null);
 
@@ -55,6 +55,8 @@ const PlayGround = () => {
   };
 
 
+
+
   return (
     <div
       style={{
@@ -81,7 +83,7 @@ const PlayGround = () => {
         {/* ------------------------------------------ Theme selections space--------------------------------------------- */}
 
         <Box>
-          <SelectorSection key={1215} oldLabelValue={''} id={1215} title={'THEME'} handleDragOver={()=>{}} handleDragStart={()=>{}} handleDrop={()=>{}} isDragged={false} index={1215} />
+          <SelectorSection key={1215} oldLabelValue={''} id={1215} title={'THEME'} handleDragOver={() => { }} handleDragStart={() => { }} handleDrop={() => { }} isDragged={false} index={1215} />
         </Box>
 
 
@@ -106,31 +108,15 @@ const PlayGround = () => {
             </Stack>
           ) : (
             selectedComponents.map((ele, index) => (
-              <SelectorSection key={index} oldLabelValue={ele.label} id={ele.id} title={ele.title} handleDragOver={handleDragOver} handleDragStart={handleDragStart} handleDrop={handleDrop} isDragged={true} index={index} isFullPreviewed={isFullPreviewed}/>
+              <SelectorSection key={index} oldLabelValue={ele.label} id={ele.id} title={ele.title} handleDragOver={handleDragOver} handleDragStart={handleDragStart} handleDrop={handleDrop} isDragged={true} index={index} isFullPreviewed={isFullPreviewed} />
             ))
           )}
 
           {/* -------------------------------- Save and Apply Button---------------------- */}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              my: 2,
-            }}
-          >
-            <Button
-              variant="outlined"
-              sx={{
-                bgcolor: theme.palette.primary.main,
-                color: "#fff",
-                textTransform: "none",
-                mx: "auto",
-              }}
-            >
-              Save And Apply
-            </Button>
-          </Box>
+
+          <SaveAndApplyButton />
+
+
 
         </Box>
 
@@ -157,10 +143,10 @@ const PlayGround = () => {
           }}
         >
           {/* ---------------------------------- Copy and Share bar----------------------------- */}
-          <SharableContentbar  hanldeFullPreviewed ={()=> setIsFullPreviewed((pre)=>!pre)}  isFullPreviewed ={isFullPreviewed}/>
+          <SharableContentbar hanldeFullPreviewed={() => setIsFullPreviewed((pre) => !pre)} isFullPreviewed={isFullPreviewed} />
           {/* ---------------------------------- In Preview Component------------------------------------- */}
 
-          <PreviewContainer isFullPreviewed ={isFullPreviewed} />
+          <PreviewContainer isFullPreviewed={isFullPreviewed} />
         </Stack>
       </Box>
     </div>

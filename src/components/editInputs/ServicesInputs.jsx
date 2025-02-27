@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { DeleteOutlineOutlined } from "@mui/icons-material";
+import { CloudUpload, DeleteOutlineOutlined } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -9,18 +9,22 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import { deleteObject, ref } from "firebase/storage";
 import { useDispatch, useSelector } from "react-redux";
+import { v4 as uuidv4 } from 'uuid';
+import { storage } from "../../firebase";
 import {
+  addServiceItem,
   changeServices,
   changeServicesList,
-  addServiceItem,
+  changeServicesListImage,
   removeServiceItem,
 } from "../../redux/reducers/universalStyles";
-import ImageUpload from "../ImageUpload";
+import { uploadImageOnFirebaseStorageServices } from "../../utils/imageupload/firebase-storage-upload";
 
 const ServicesInputs = ({ id }) => {
-  const dispatch = useDispatch();
   const theme = useTheme();
+  const dispatch = useDispatch();
 
   // Get the service component from Redux by id
   const servicesState = useSelector((state) => state.universalThemeReducer.services);
@@ -50,24 +54,74 @@ const ServicesInputs = ({ id }) => {
     );
   };
 
-  const handleServiceImageChange = (e, index) => {
+  // ------------------------ image upload and delete logic--------------------------------
+  const handleServiceImageChange = (e, serviceId) => {
+    handleFileChange(e, serviceId);
+  };
+
+  const handleServiceImageDrop = (e, serviceId) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) handleFileChange({ target: { files: [file] } }, serviceId);
+  };
+
+  const handleFileChange = async (e, serviceId) => {
+    const websiteId = `mywebsite`;
     const file = e.target.files[0];
-    if (file) {
-      dispatch(
-        changeServicesList({ id, index, content: file, field: "image" })
+    if (!file || !serviceId) return;
+
+    try {
+      const downloadURL = await uploadImageOnFirebaseStorageServices(
+        file,
+        websiteId,
+        `${serviceId}-${uuidv4()}` // Unique filename with service ID
       );
+
+      dispatch(changeServicesListImage({
+        id,
+        serviceId,
+        content: downloadURL,
+        field: 'image'
+      }));
+    } catch (error) {
+      console.error("Upload failed:", error);
     }
   };
 
-  const handleServiceImageDrop = (e, index) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      dispatch(
-        changeServicesList({ id, index, content: file, field: "image" })
-      );
+  // to delete the uploaded image
+  const handleDeleteImage = async (serviceId, imageUrl) => {
+    if (!imageUrl) return;
+
+    try {
+      // Extract path from download URL
+      const encodedPath = imageUrl.split('/o/')[1].split('?')[0];
+      const decodedPath = decodeURIComponent(encodedPath);
+      const imageRef = ref(storage, decodedPath);
+
+      // Delete from Firebase Storage
+      await deleteObject(imageRef);
+
+      // Remove from Redux state
+      dispatch(changeServicesListImage({
+        id,
+        serviceId,
+        content: null,
+        field: 'image'
+      }));
+    } catch (error) {
+      console.error("Error deleting image:", error);
+      // Optionally show error to user
     }
   };
+
+
+
+
+  // Updated delete handler
+  const handleDeleteService = (serviceId) => {
+    dispatch(removeServiceItem({ id, serviceId }));
+  };
+
 
   // --- Handler for Adding a New Service Item ---
   const handleAddService = () => {
@@ -77,11 +131,6 @@ const ServicesInputs = ({ id }) => {
         service: { heading: "", description: "", image: null },
       })
     );
-  };
-
-  // --- Handler for Deleting a Service Item ---
-  const handleDeleteService = (index) => {
-    dispatch(removeServiceItem({ id, index }));
   };
 
   return (
@@ -151,11 +200,79 @@ const ServicesInputs = ({ id }) => {
           {/* Image Upload for Service */}
           <Box sx={{ mb: 1 }}>
             <Typography variant="subtitle1">Image</Typography>
-            <ImageUpload
-              file={service.image}
-              handleFileDrop={(e) => handleServiceImageDrop(e, index)}
-              hanldeFileUpload={(e) => handleServiceImageChange(e, index)}
-            />
+            <Box
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => handleServiceImageDrop(e, service.id)}
+              sx={{     p: 1,
+                textAlign: "center",
+                borderRadius: "8px",
+                "&:hover": { borderColor: "primary.main" },
+                width: "70%",
+                // mx: 'auto',
+                bgcolor: '#f8f9fa',
+                border: "2px dashed #ccc", }}
+            >
+              {service.image ? (
+                <>
+                  <img
+                    src={service.image}
+                    alt="Preview"
+                    style={{
+                      maxWidth: 100,
+                      maxHeight: 100,
+                      marginBottom: 8,
+                      borderRadius: 4
+                    }}
+                  />
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={() => handleDeleteImage(service.id, service.image)}
+                  >
+                    Remove Image
+                  </Button>
+                </>
+              ) : (
+                <>
+  <CloudUpload sx={{
+                    color: "#6c757d",
+                    width: "3rem",
+                    height: "2rem",
+                    mx: "auto"
+                }} />                 
+                  <Box sx={{
+                    position: "relative",
+
+
+                }}>
+                    <label htmlFor={`file-upload-${service.id}`}>
+                        <Box
+                            sx={{
+                                // padding: "20px",
+                                textAlign: "center",
+                                cursor: "pointer",
+                            }}
+                        >
+                            <Typography variant="subtitle2" sx={{ color: "#a9a9a9" }}>
+                                Drag file here or click to browse.
+                            </Typography>
+                        </Box>
+                    </label>
+
+                    <input
+                        id={`file-upload-${service.id}`}
+                        type="file"
+                        style={{
+                            display: "none", // Hide but still clickable via label
+                        }}
+                        onChange={(e) => handleServiceImageChange(e, service.id)}
+                        accept="image/*"
+                    />
+                </Box>
+
+                </>
+              )}
+            </Box>
           </Box>
         </Box>
       ))}

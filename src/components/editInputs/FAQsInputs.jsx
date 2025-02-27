@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { DeleteOutlineOutlined } from "@mui/icons-material";
+import { CloudUpload, DeleteOutlineOutlined } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -9,14 +9,18 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import { deleteObject, ref } from "firebase/storage";
 import { useDispatch, useSelector } from "react-redux";
+import { v4 as uuidv4 } from 'uuid';
+import { storage } from "../../firebase";
 import {
   addFAQItem,
   changeFAQ,
   changeFAQList,
   removeFAQItem,
 } from "../../redux/reducers/universalStyles";
-import ImageUpload from "../ImageUpload";
+import { uploadImageOnFirebaseStorageServices } from "../../utils/imageupload/firebase-storage-upload";
+
 
 const FAQsInputs = ({ id }) => {
   const dispatch = useDispatch();
@@ -42,21 +46,64 @@ const FAQsInputs = ({ id }) => {
     dispatch(changeFAQ({ id, content: e.target.value, type: "title" }));
   };
 
-  // Handler for global FAQ image.
-  const handleFAQGlobalImageUpload = (e) => {
+
+  const handleImageChange = (e, id) => {
+    handleFileChange(e, id);
+  };
+
+  const handleImageDrop = (e, id) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) handleFileChange({ target: { files: [file] } }, id);
+  };
+
+  const handleFileChange = async (e, id) => {
+    const websiteId = `mywebsite`;
     const file = e.target.files[0];
-    if (file) {
-      dispatch(changeFAQ({ id, content: file, type: "image" }));
+    if (!file || !id) return;
+
+    try {
+      const downloadURL = await uploadImageOnFirebaseStorageServices(
+        file,
+        websiteId,
+        `${id}-${uuidv4()}` // Unique filename with service ID
+      );
+
+      dispatch(changeFAQ({
+        id,
+        content: downloadURL,
+        type: 'image'
+      }));
+    } catch (error) {
+      console.error("Upload failed:", error);
     }
   };
 
-  const handleFAQGlobalImageDrop = (e) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      dispatch(changeFAQ({ id, content: file, type: "image" }));
+  // to delete the uploaded image
+  const handleDeleteImage = async (imageUrl) => {
+    if (!imageUrl) return;
+
+    try {
+      // Extract path from download URL
+      const encodedPath = imageUrl.split('/o/')[1].split('?')[0];
+      const decodedPath = decodeURIComponent(encodedPath);
+      const imageRef = ref(storage, decodedPath);
+
+      // Delete from Firebase Storage
+      await deleteObject(imageRef);
+
+      // Remove from Redux state
+      dispatch(changeFAQ({
+        id,
+        content: null,
+        type: 'image'
+      }));
+    } catch (error) {
+      console.error("Error deleting image:", error);
+      // Optionally show error to user
     }
   };
+
 
   // Handler for updating FAQ list items (question or answer)
   const handleFAQFieldChange = (e, index, field) => {
@@ -93,14 +140,83 @@ const FAQsInputs = ({ id }) => {
         />
       </Box>
 
-      {/* Global FAQ Image Field */}
       <Box sx={{ mb: 1 }}>
-        <Typography variant="subtitle1">FAQ Global Image</Typography>
-        <ImageUpload
-          file={content.image}
-          handleFileDrop={handleFAQGlobalImageDrop}
-          hanldeFileUpload={handleFAQGlobalImageUpload}
-        />
+        <Typography variant="subtitle1">Image</Typography>
+        <Box
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => handleImageDrop(e, id)}
+          sx={{
+            p: 1,
+            textAlign: "center",
+            borderRadius: "8px",
+            "&:hover": { borderColor: "primary.main" },
+            width: "70%",
+            // mx: 'auto',
+            bgcolor: '#f8f9fa',
+            border: "2px dashed #ccc",
+          }}
+        >
+          {content.image ? (
+            <>
+              <img
+                src={content.image}
+                alt="Preview"
+                style={{
+                  maxWidth: 100,
+                  maxHeight: 100,
+                  marginBottom: 8,
+                  borderRadius: 4
+                }}
+              />
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={() => handleDeleteImage(content.image)}
+              >
+                Remove Image
+              </Button>
+            </>
+          ) : (
+            <>
+              <CloudUpload sx={{
+                color: "#6c757d",
+                width: "3rem",
+                height: "2rem",
+                mx: "auto"
+              }} />
+              <Box sx={{
+                position: "relative",
+
+
+              }}>
+                <label htmlFor={`file-upload-${id}`}>
+                  <Box
+                    sx={{
+                      // padding: "20px",
+                      textAlign: "center",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <Typography variant="subtitle2" sx={{ color: "#a9a9a9" }}>
+                      Drag file here or click to browse.
+                    </Typography>
+                  </Box>
+                </label>
+
+                <input
+                  id={`file-upload-${id}`}
+                  type="file"
+                  style={{
+                    display: "none", // Hide but still clickable via label
+                  }}
+                  onChange={(e) => handleImageChange(e, id)}
+                  accept="image/*"
+                />
+              </Box>
+
+            </>
+          )}
+        </Box>
       </Box>
 
       {/* Map through FAQ items */}

@@ -1,8 +1,10 @@
 /* eslint-disable react/prop-types */
 import { Button, Stack, useTheme } from '@mui/material'
+import { useSelector } from 'react-redux'
 
 const SharableContentbar = ({hanldeFullPreviewed,isFullPreviewed}) => {
     const theme = useTheme()
+    const {generatedWebsiteId} = useSelector((state)=>state.websiteIdReducer)
   return (
     <Stack direction={'row'}
 
@@ -17,13 +19,23 @@ const SharableContentbar = ({hanldeFullPreviewed,isFullPreviewed}) => {
       <Stack variant="center" gap={1}>
       <Button variant='outlined' sx={{
             backgroundColor:'',
-            // borderRadius:"8px",
             padding:"0.4rem  2rem",
             bgcolor:theme.palette.primary.light,
             color:'#ffffff'
             
 
-        }} >Copy URL</Button>
+        }}  onClick={() =>
+         
+          navigator.clipboard.writeText(`http://localhost:5173/website/${generatedWebsiteId}`)
+        }
+        
+        
+        disabled = { generatedWebsiteId == null}
+        
+        >Copy URL</Button>
+
+
+
         <Button variant='outlined' sx={{
             backgroundColor:'',
             // borderRadius:"8px",

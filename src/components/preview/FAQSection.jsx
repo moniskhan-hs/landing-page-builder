@@ -37,7 +37,7 @@ const FAQImages = ({ image }) => {
 };
 
 
-const FAQSection = ({data}) => {
+const FAQSection = ({data,isFetchedTheme,fetchingThemeData}) => {
   const [isExpanded, setIsExpanded] = useState({})
   const [isExpandedContainer, setIsExpandedContainer] = useState(false)
   const theme = useTheme()
@@ -56,16 +56,16 @@ const FAQSection = ({data}) => {
     <Stack
       sx={{
         width: "100vw",
-        padding: "3rem 10rem",
+        padding: {md:"3rem 10rem",xs:'1rem'},
         bgcolor:
-        selectedTheme.background.section || theme.palette.background.section,
+      isFetchedTheme?fetchingThemeData?.background.section :  selectedTheme?.background.section || theme.palette.background.section,
     }}>
       <Typography
         variant="h3"
         mb={4}
         sx={{
           mx: "auto",
-          color: selectedTheme.typography.subTitleColor,
+          color: isFetchedTheme?fetchingThemeData?.typography.subTitleColor: selectedTheme?.typography.subTitleColor,
 
         }}
       >
@@ -73,7 +73,7 @@ const FAQSection = ({data}) => {
       </Typography>
       {/* -------------------------An image [optional] */}
       <Box sx={{
-        width: '40%',
+        width:{ md:'40%',xs:'100%'},
         mx: 'auto',
         mb: 4,
 
@@ -89,7 +89,7 @@ const FAQSection = ({data}) => {
         sx={{
           mt: 2,
           borderRadius: "8px",
-          backgroundColor: theme.palette.background.section,
+          backgroundColor: isFetchedTheme? fetchingThemeData.background.section : selectedTheme.background.section || theme.palette.background.section,
           height: isExpandedContainer ? data?.content.fAndq.length >3 && data?.content.fAndq.length<=8? `${data?.content.fAndq.length* 11}vh`:'90vh'  : '35vh',
           transition: 'height 0.3s ease-in-out',
           overflow: 'scroll',
@@ -123,7 +123,7 @@ const FAQSection = ({data}) => {
             sx={{
              m:2,
               borderRadius: "8px",
-              backgroundColor: theme.palette.background.paper,
+              backgroundColor: isFetchedTheme? fetchingThemeData.background.paper : selectedTheme.background.paper || theme.palette.background.paper,
               height: isExpanded[index] ? '10rem' : '4rem',
               transition: 'height 0.3s ease-in-out',
               overflow: isExpanded[index] ? 'scroll' : 'hidden',
@@ -158,7 +158,7 @@ const FAQSection = ({data}) => {
                 width: "90%",
                 padding: "0.5rem 1rem"
               }}>
-                <Typography variant='h6' >
+                <Typography variant='h6'  color={isFetchedTheme ? fetchingThemeData?.typography.subTitleColor : selectedTheme?.typography.subTitleColor}>
                   {ele.question}
                 </Typography>
               </Box>
@@ -185,7 +185,7 @@ const FAQSection = ({data}) => {
             <Box mt={2} sx={{
               padding: "0.5rem 1rem"
             }}>
-              <Typography variant='subtitle1'>
+              <Typography variant='subtitle1' color={isFetchedTheme ? fetchingThemeData?.typography.paragraphColor : selectedTheme?.typography.paragraphColor}>
                 {ele.answer}
               </Typography>
             </Box>
@@ -199,7 +199,7 @@ const FAQSection = ({data}) => {
 
       </Box>
 
-      {data?.content.fAndq.length> 3 && <Stack variant='center'>
+      {data?.content?.fAndq?.length> 3 && <Stack variant='center'>
         <Button
           onClick={() => setIsExpandedContainer((pre) => !pre)}
           sx={{

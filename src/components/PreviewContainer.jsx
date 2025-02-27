@@ -9,6 +9,9 @@ const PreviewContainer = ({ isFullPreviewed }) => {
   const previewComponents = useSelector((state) => state.sectionStateReducer);
   const componentsValue = useSelector((state) => state.universalThemeReducer);
   const theme = useTheme();
+  const { theme: selectedTheme } = componentsValue;
+  console.log('selectedTheme in preview container:', selectedTheme)
+
   const { id: selectedComponentId, name } = useSelector(
     (state) => state.selectedComponentReducer
   );
@@ -70,70 +73,14 @@ const PreviewContainer = ({ isFullPreviewed }) => {
               to Add
             </Stack>
           </Stack>
-        ) : // ---------------------------------- Components render in for preview------------------------------------------------
-        isFullPreviewed ? (
-          previewComponents.map((ele, index) => {
-            const Component = chooseRenderComponent(ele.title);
-            console.log("Component Name in preview:", ele.title);
-            let selectedComponent;
-
-            switch (ele.title) {
-              case "HERO":
-                selectedComponent = componentsValue.hero;
-                break;
-              case "SERVICES":
-                selectedComponent = componentsValue.services;
-                break;
-              case "BENEFITS":
-                selectedComponent = componentsValue.benefits;
-                break;
-                case "TESTIMONIALS":
-                  selectedComponent = componentsValue.testimonials;
-                  break;
-                  case "INCLUDED / NOT-INCLUDED":
-                    selectedComponent = componentsValue.includedNotIncluded;
-                    break;
-              case "ABOUT US":
-                selectedComponent = componentsValue.about;
-                break;
-              case "FAQ":
-                selectedComponent = componentsValue.frequentlyAsked;
-                break;
-              
-              case "CALL TO ACTION":
-                selectedComponent = componentsValue.callToAction;
-                break;
-              
-              
-
-
-              default:
-                selectedComponent = componentsValue.hero;
-
-                break;
-            }
-            console.log("selectedComponent:", selectedComponent);
-            const dataToSend = selectedComponent.find(
-              (data) => data.id === ele.id
-            );
-            console.log("dataToSend:", dataToSend);
-            if (dataToSend == undefined)
-              return <NoSelectedPreview key={index} theme={theme} />;
-            return Component && dataToSend ? (
-              <Component key={index} id={ele.id} data={dataToSend} />
-            ) : null;
-          })
-        ) : selectedComponentId == null ? (
-          <NoSelectedPreview theme={theme} />
-        ) : (
-          // ------------------------Show only selected COmponent---------------
-
-          previewComponents.map((ele, index) => {
-            if (ele.title == name && ele.id == selectedComponentId) {
-              const Component = chooseRenderComponent(name);
-              console.log("Selected Component Name", name);
+        ) : // ---------------------------------- Components render for preview------------------------------------------------
+          isFullPreviewed ? (
+            previewComponents.map((ele, index) => {
+              const Component = chooseRenderComponent(ele.title);
+              console.log("Component Name in preview:", ele.title);
               let selectedComponent;
-              switch (name) {
+
+              switch (ele.title) {
                 case "HERO":
                   selectedComponent = componentsValue.hero;
                   break;
@@ -143,24 +90,32 @@ const PreviewContainer = ({ isFullPreviewed }) => {
                 case "BENEFITS":
                   selectedComponent = componentsValue.benefits;
                   break;
-                  case "TESTIMONIALS":
-                    selectedComponent = componentsValue.testimonials;
-                    break;
+                case "TESTIMONIALS":
+                  selectedComponent = componentsValue.testimonials;
+                  break;
+                case "INCLUDED / NOT-INCLUDED":
+                  selectedComponent = componentsValue.includedNotIncluded;
+                  break;
                 case "ABOUT US":
                   selectedComponent = componentsValue.about;
                   break;
                 case "FAQ":
                   selectedComponent = componentsValue.frequentlyAsked;
                   break;
-                  case "INCLUDED / NOT-INCLUDED":
-                    selectedComponent = componentsValue.includedNotIncluded;
-                    break;
-                  case "CALL TO ACTION":
-                    selectedComponent = componentsValue.callToAction;
-                    break;
+
+                case "CALL TO ACTION":
+                  selectedComponent = componentsValue.callToAction;
+                  break;
+
+                case "FORM":
+                  selectedComponent = componentsValue.form;
+                  break;
+
+
                 default:
                   selectedComponent = componentsValue.hero;
-                break;
+
+                  break;
               }
               console.log("selectedComponent:", selectedComponent);
               const dataToSend = selectedComponent.find(
@@ -170,11 +125,64 @@ const PreviewContainer = ({ isFullPreviewed }) => {
               if (dataToSend == undefined)
                 return <NoSelectedPreview key={index} theme={theme} />;
               return Component && dataToSend ? (
-                <Component key={index} id={ele.id} data={dataToSend} />
+                <Component key={index} id={ele.id} data={dataToSend} isFetchedTheme = {false} fetchingThemeData ={null} /> // fetchingData = themeDataFromRedux
               ) : null;
-            }
-          })
-        )}
+            })
+          ) : selectedComponentId == null ? (
+            <NoSelectedPreview theme={theme} />
+          ) : (
+            // ------------------------Show only selected Component---------------
+
+            previewComponents.map((ele, index) => {
+              if (ele.title == name && ele.id == selectedComponentId) {
+                const Component = chooseRenderComponent(name);
+                console.log("Selected Component Name", name);
+                let selectedComponent;
+                switch (name) {
+                  case "HERO":
+                    selectedComponent = componentsValue.hero;
+                    break;
+                  case "SERVICES":
+                    selectedComponent = componentsValue.services;
+                    break;
+                  case "BENEFITS":
+                    selectedComponent = componentsValue.benefits;
+                    break;
+                  case "TESTIMONIALS":
+                    selectedComponent = componentsValue.testimonials;
+                    break;
+                  case "ABOUT US":
+                    selectedComponent = componentsValue.about;
+                    break;
+                  case "FAQ":
+                    selectedComponent = componentsValue.frequentlyAsked;
+                    break;
+                  case "INCLUDED / NOT-INCLUDED":
+                    selectedComponent = componentsValue.includedNotIncluded;
+                    break;
+                  case "CALL TO ACTION":
+                    selectedComponent = componentsValue.callToAction;
+                    break;
+                  case "FORM":
+                    selectedComponent = componentsValue.form;
+                    break;
+                  default:
+                    selectedComponent = componentsValue.hero;
+                    break;
+                }
+                console.log("selectedComponent:", selectedComponent);
+                const dataToSend = selectedComponent.find(
+                  (data) => data.id === ele.id
+                );
+                console.log("dataToSend:", dataToSend);
+                if (dataToSend == undefined)
+                  return <NoSelectedPreview key={index} theme={theme} />;
+                return Component && dataToSend ? (
+                  <Component key={index} id={ele.id} data={dataToSend} isFetchedTheme = {false} fetchingThemeData ={null}  />
+                ) : null;
+              }
+            })
+          )}
       </Box>
     </Box>
   );

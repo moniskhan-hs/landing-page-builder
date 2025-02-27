@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { DeleteOutlineOutlined } from "@mui/icons-material";
+import { CloudUpload, DeleteOutlineOutlined } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -9,15 +9,18 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { deleteObject, ref } from "firebase/storage";
 import { useDispatch, useSelector } from "react-redux";
-import ImageUpload from "../ImageUpload";
+import { v4 as uuidv4 } from 'uuid';
+import { storage } from "../../firebase";
 import {
   addBenefitsItem,
+  changeBenefitListImage,
   changeBenefits,
   changeBenefitsList,
   removeBenefitItem,
 } from "../../redux/reducers/universalStyles";
+import { uploadImageOnFirebaseStorageServices } from "../../utils/imageupload/firebase-storage-upload";
 
 const BenefitsInputs = ({id}) => {
   const dispatch = useDispatch();
@@ -58,24 +61,66 @@ const BenefitsInputs = ({id}) => {
     );
   };
 
-  const handleBenefitsImageChange = (e, index) => {
-    const file = e.target.files[0];
-    if (file) {
-      dispatch(
-        changeBenefitsList({ id, index, content: file, field: "image" })
-      );
-    }
-  };
+// ------------------------ image upload and delete logic--------------------------------
+const handleBenefitImageChange = (e, serviceId) => {
+  handleFileChange(e, serviceId);
+};
 
-  const handleBenefitsImageDrop = (e, index) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      dispatch(
-        changeBenefitsList({ id, index, content: file, field: "image" })
-      );
-    }
-  };
+const handleBenefitImageDrop = (e, serviceId) => {
+  e.preventDefault();
+  const file = e.dataTransfer.files[0];
+  if (file) handleFileChange({ target: { files: [file] } }, serviceId);
+};
+
+const handleFileChange = async (e, benefitId) => {
+  const websiteId = `mywebsite`;
+  const file = e.target.files[0];
+  if (!file || !benefitId) return;
+
+  try {
+    const downloadURL = await uploadImageOnFirebaseStorageServices(
+      file,
+      websiteId,
+      `${benefitId}-${uuidv4()}` // Unique filename with service ID
+    );
+
+    dispatch(changeBenefitListImage({
+      id,
+      benefitId,
+      content: downloadURL,
+      field: 'image'
+    }));
+  } catch (error) {
+    console.error("Upload failed:", error);
+  }
+};
+
+// to delete the uploaded image
+const handleDeleteImage = async (benefitId, imageUrl) => {
+  if (!imageUrl) return;
+
+  try {
+    // Extract path from download URL
+    const encodedPath = imageUrl.split('/o/')[1].split('?')[0];
+    const decodedPath = decodeURIComponent(encodedPath);
+    const imageRef = ref(storage, decodedPath);
+
+    // Delete from Firebase Storage
+    await deleteObject(imageRef);
+
+    // Remove from Redux state
+    dispatch(changeBenefitListImage({
+      id,
+      benefitId,
+      content: null,
+      field: 'image'
+    }));
+  } catch (error) {
+    console.error("Error deleting image:", error);
+    // Optionally show error to user
+  }
+};
+
 
 
 
@@ -164,26 +209,83 @@ const BenefitsInputs = ({id}) => {
           </Box>
 
           {/* Image Upload */}
-          <Box sx={{ mb: 1 }}>
-            <Typography variant="subtitle1">Image</Typography>
-            <ImageUpload
-              file={benefit.image}
-              handleFileDrop={(e) => handleBenefitsImageDrop(e, index)}
-              hanldeFileUpload={(e) => handleBenefitsImageChange(e, index)}
-            />
-            {benefit.image && (
-              <Typography
-                variant="subtitle2"
-                sx={{
-                  border: "1px solid",
-                  padding: "0.5rem 0.7rem",
-                  mt: 1,
-                }}
-              >
-                File selected: {benefit.image?.name}
-              </Typography>
-            )}
-          </Box>
+           {/* Image Upload for Service */}
+                   <Box sx={{ mb: 1 }}>
+                     <Typography variant="subtitle1">Image</Typography>
+                     <Box
+                       onDragOver={(e) => e.preventDefault()}
+                       onDrop={(e) => handleBenefitImageDrop(e, benefit.id)}
+                       sx={{     p: 1,
+                         textAlign: "center",
+                         borderRadius: "8px",
+                         "&:hover": { borderColor: "primary.main" },
+                         width: "70%",
+                         // mx: 'auto',
+                         bgcolor: '#f8f9fa',
+                         border: "2px dashed #ccc", }}
+                     >
+                       {benefit.image ? (
+                         <>
+                           <img
+                             src={benefit.image}
+                             alt="Preview"
+                             style={{
+                               maxWidth: 100,
+                               maxHeight: 100,
+                               marginBottom: 8,
+                               borderRadius: 4
+                             }}
+                           />
+                           <Button
+                             variant="outlined"
+                             color="error"
+                             onClick={() => handleDeleteImage(benefit.id, benefit.image)}
+                           >
+                             Remove Image
+                           </Button>
+                         </>
+                       ) : (
+                         <>
+           <CloudUpload sx={{
+                             color: "#6c757d",
+                             width: "3rem",
+                             height: "2rem",
+                             mx: "auto"
+                         }} />                 
+                           <Box sx={{
+                             position: "relative",
+         
+         
+                         }}>
+                             <label htmlFor={`file-upload-${benefit.id}`}>
+                                 <Box
+                                     sx={{
+                                         // padding: "20px",
+                                         textAlign: "center",
+                                         cursor: "pointer",
+                                     }}
+                                 >
+                                     <Typography variant="subtitle2" sx={{ color: "#a9a9a9" }}>
+                                         Drag file here or click to browse.
+                                     </Typography>
+                                 </Box>
+                             </label>
+         
+                             <input
+                                 id={`file-upload-${benefit.id}`}
+                                 type="file"
+                                 style={{
+                                     display: "none", // Hide but still clickable via label
+                                 }}
+                                 onChange={(e) => handleBenefitImageChange(e, benefit.id)}
+                                 accept="image/*"
+                             />
+                         </Box>
+         
+                         </>
+                       )}
+                     </Box>
+                   </Box>
         </Box>
       ))}
 

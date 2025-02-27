@@ -3,7 +3,7 @@ import React from 'react'
 import { scheduleData } from '../utils/data'
 import { Box, Stack, Typography } from '@mui/material'
 
-const ScheduleComponent = ({ iconBackground, iconType, iconColor, paperColor }) => {
+const ScheduleComponent = ({ iconBackground, iconType, iconColor, paperColor ,data}) => {
 
     return (
         <Stack sx={{
@@ -14,8 +14,8 @@ const ScheduleComponent = ({ iconBackground, iconType, iconColor, paperColor }) 
         
         }}>
             {
-                scheduleData.map((ele, index) => {
-                    const Icon = ele.icon
+                data?.map((ele, index) => {
+                    // const Icon = ele.icon
 
                     return (<Stack direction={'row'} key={index} sx={{
                         width: "100%",
@@ -26,7 +26,8 @@ const ScheduleComponent = ({ iconBackground, iconType, iconColor, paperColor }) 
                         
                         bgcolor: paperColor,
                     }}>
-                        <Stack variant='center' sx={{
+                        {/* -------------------- Icon will be added in future */}
+                        {/* <Stack variant='center' sx={{
                             width: '30%',
                             // padding:"2rem"
                             backgroundColor: iconBackground || "#4caf50",
@@ -39,12 +40,12 @@ const ScheduleComponent = ({ iconBackground, iconType, iconColor, paperColor }) 
                                 width: "2.5rem",
                                 height: "2.5rem"
                             }} />
-                        </Stack>
+                        </Stack> */}
                         <Stack sx={{
                             flex: 1
                         }} >
-                            <Typography variant='h6'>{ele.title} </Typography>
-                            <Typography variant='h5'>{ele.value || "some value"} </Typography>
+                            <Typography variant='h6'>{ele.labelText} </Typography>
+                            <Typography variant='h5'>{ele.infoText || "some value"} </Typography>
 
                         </Stack>
 
