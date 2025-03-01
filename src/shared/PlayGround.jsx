@@ -5,23 +5,27 @@ import PreviewContainer from "../components/PreviewContainer";
 import SaveAndApplyButton from "../components/SaveAndApplyButton";
 import SelectorSection from "../components/SelectorSection";
 import SharableContentbar from "../components/SharableContentbar";
+import { changeInMultiState } from "../redux/reducers/addMultiComponenet";
 import { changeInSectionState } from "../redux/reducers/sectionsState";
 
 const PlayGround = () => {
   const theme = useTheme();
-  // const menuItemsState = useSelector((state) => state.sidebarMenuReducer);
-  const menuItemsState = useSelector((state) => state.addMultiComponentReducer);
+  //TODO ----------- If something will happen related to the 
+  //TODO            ordring of selected sections then undo the commented line a 
+  // const menuItemsState = useSelector((state) => state.addMultiComponentReducer);
+  const menuItemsState = useSelector((state) => state.sectionStateReducer);
   const [selectedComponents, setSelectedComponents] = useState([]);
   const dispatch = useDispatch()
   const [isFullPreviewed, setIsFullPreviewed] = useState(false)
 
   useEffect(() => {
     const updatedSelected = menuItemsState.filter((ele) => ele.isSelected);
+    console.log('menuItemsState:', menuItemsState)
     setSelectedComponents(updatedSelected);
     console.log('updatedSelected:', updatedSelected)
-    dispatch(changeInSectionState(updatedSelected));
-
+    dispatch(changeInMultiState(updatedSelected));
   }, [menuItemsState, dispatch]);
+  // }, [dispatch]);
 
 
   const [draggedIndex, setDraggedIndex] = useState(null);
@@ -103,7 +107,7 @@ const PlayGround = () => {
                   color: theme.palette.text.disabled,
                 }}
               >
-                Selected Components will be shown here
+                Selected sections will be shown here
               </Typography>
             </Stack>
           ) : (

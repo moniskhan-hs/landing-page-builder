@@ -12,7 +12,7 @@ import AboutUsSection from "../components/preview/AboutUsSection";
 import BenefitesSection from "../components/preview/BenefitesSection";
 import CallToActionSection from "../components/preview/CallToActionSection";
 import FAQSection from "../components/preview/FAQSection";
-import FormSection from "../components/preview/FormSection";
+import FormSection from "../components/preview/FormSection/FormSection";
 import HeroSection from "../components/preview/HeroSection";
 import IncludedOrNotIncludedSection from "../components/preview/IncludedOrNotIncludedSection";
 import ServicesOrOfferingSection from "../components/preview/ServicesOrOfferingSection";
@@ -52,3 +52,7 @@ export const componentsInputs = [
 
 
   
+export const capitalizeString = (str) => {
+    if (!str) return ''; // Handle empty string case
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  };

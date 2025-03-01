@@ -83,7 +83,7 @@ export const theme = createTheme({
       fontWeight: 700,
       lineHeight: 1.4,
     },
-    // FAQ
+    // FAQ AND Navbar menus
     h6: {
       fontSize: '1.25rem',
       fontWeight: 500,
@@ -166,6 +166,7 @@ export const theme = createTheme({
               textTransform:"none",
               width: '18rem',
               marginTop: 5,
+              // padding:"0.4rem  2rem",
              
           }
         }

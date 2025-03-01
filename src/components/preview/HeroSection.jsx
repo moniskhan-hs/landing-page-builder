@@ -17,8 +17,6 @@ const HeroSection = ({ id, data = {} ,isFetchedTheme,fetchingThemeData}) => {
 
   return (
     <Stack
-
-      // direction={"row"}
       gap={2}
       sx={{
         width: "100vw",
@@ -63,7 +61,8 @@ const HeroSection = ({ id, data = {} ,isFetchedTheme,fetchingThemeData}) => {
                 color: isFetchedTheme?fetchingThemeData?.button.buttonTextColor: selectedTheme?.button?.buttonTextColor,
                 bgcolor: isFetchedTheme?fetchingThemeData?.button.buttonBackground: selectedTheme?.button?.buttonBackground,
                 fontWeight: "bold",
-                width: { xs: '100%', md: '18rem' }
+                width: { xs: '100%', md: '18rem' },
+                padding:"0.6rem 0rem"
               }}
             >
               {data?.content?.buttonText || "Click me"}

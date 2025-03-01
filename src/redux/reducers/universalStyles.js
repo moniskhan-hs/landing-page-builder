@@ -1,60 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-const initialState = {
-  // directly replace the theme with the object of theme of themeinputs.jsx file
-  theme: {
-    typography: {
-      titleColor: "",
-      subTitleColor: "",
-      headingColor: "",
-      paragraphColor: "",
-    },
-    button: {
-      buttonTextColor: "",
-      buttonBackground: "",
-    },
-    background: {
-      default: "",
-      paper: "",
-      section: "",
-    },
-    icon: {
-      iconColor: "",
-      iconBackground: "",
-      selectedIconType: "",
-    },
-  },
-
-  hero: [],
-
-  services: [],
-
-  benefits: [],
-
-  about: [],
-
-  frequentlyAsked: [],
-
-  includedNotIncluded: [],
-
-  testimonials: [],
-
-  callToAction: [],
-  
-  form:[]
-
-
-};
+import { initialState } from "../../utils/data";
 
 export const universalThemeReducer = createSlice({
   name: "universalThemeReducer",
-  initialState,
+  initialState:initialState,
   reducers: {
     changeTheme: (state, action) => {
       const { componentName, data } = action.payload;
       console.log("componentName:", componentName);
       state.theme[componentName] = data;
     },
+
+    changeHeaderAndFooter: (state,action)=>{
+      const {componentName,textName,data} = action.payload;
+      state.theme[componentName][textName]=data
+    },
+
     // -------------------------------------------------H E R O ----------------------------------------
 
     addHero: (state, action) => {
@@ -120,7 +81,7 @@ export const universalThemeReducer = createSlice({
 
     },
     // ------------------------------------------------- S E R V I C E S -------------------------------------
-
+   
     addService: (state, action) => {
       state.services.push(action.payload);
     },
@@ -698,6 +659,8 @@ export const universalThemeReducer = createSlice({
           formComp.content.buttonText = content
         }else if (type === 'description'){
           formComp.content.description = content
+        }else if (type === 'termsAndConditions'){
+          formComp.content.termsAndConditions = content
         }
       }
     },
@@ -709,49 +672,8 @@ export const universalThemeReducer = createSlice({
   },
 });
 
-export const {
-  changeTheme,
-  addHero,
-  changeHero,
-  setHeroImage,
-  removeHero,
-  changeHeroScheduleList,
-  addScheduleItem,
-  removeScheduleItem,
-  addService,
-  changeServices,
-  removeServiceItem,
-  addServiceItem,
-  removeService,
-  changeServicesList,
-  changeServicesListImage,
-  addBenefit,
-  changeBenefits,
-  removeBenefit,
-  addBenefitsItem,
-  removeBenefitItem,
-  changeBenefitsList,
-  changeBenefitListImage,
-  addAbout,
-  changeAbout,
-  removeAbout,
-  changeAboutList,
-  addAboutItem,
-  removeAboutItem,
-  changeAboutListImage,
-  addFAQ,
-  removeFAQ,
-  removeFAQItem,
-  addFAQItem,
-  changeFAQList,
-  changeFAQ,
-  addIncludedAndNotIncluded,
-  removeIncludedNotIncluded,
-  changeIncludedNotIncluded,
-  changeIncludedNotIncludedList,
-  changeListImage,
-  addIncludesItem,
-  removeIncludeItem,
+export const {changeTheme,changeHeaderAndFooter,addHero,changeHero,setHeroImage,removeHero,changeHeroScheduleList,addScheduleItem,removeScheduleItem,addService,changeServices,removeServiceItem,addServiceItem,removeService,changeServicesList,changeServicesListImage,addBenefit,changeBenefits,removeBenefit,addBenefitsItem,removeBenefitItem,changeBenefitsList,changeBenefitListImage,addAbout,changeAbout,
+  removeAbout,changeAboutList,addAboutItem,removeAboutItem,changeAboutListImage,addFAQ,removeFAQ,removeFAQItem,addFAQItem,changeFAQList,changeFAQ,addIncludedAndNotIncluded,removeIncludedNotIncluded,changeIncludedNotIncluded,changeIncludedNotIncludedList,changeListImage,addIncludesItem,removeIncludeItem,
   changeTestimonials, removeTestimonialItem, addTestimonialItem, changeTestimonialsList, removeTestimonials, addTestimonials,changeTestimonialListImage,
   addCallToAction,addCallToActionItem,changeCallToAction,changeCallToActionList,removeCallToAction,removeCallToActionItem,
   addForm, removeForm,changeForm,changeInputsList,addInputItem,removeInputItem

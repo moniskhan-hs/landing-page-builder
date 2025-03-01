@@ -19,7 +19,7 @@ const NoSelectedPreview = ({theme}) => {
         fontSize: "1.6rem"
       }}
     >
-      No component is selected for preview
+      No section is selected for preview
     </Typography>
 
     <Stack variant={'center'}
@@ -30,7 +30,7 @@ const NoSelectedPreview = ({theme}) => {
       Click <OpenInFull sx={{
         color: theme.palette.primary.main,
         mx:1
-      }}></OpenInFull> to Add
+      }}></OpenInFull> to view
     </Stack>
 
   </Stack>

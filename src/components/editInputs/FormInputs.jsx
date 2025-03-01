@@ -1,8 +1,6 @@
 /* eslint-disable react/prop-types */
 import { DeleteOutlineOutlined } from '@mui/icons-material'
 import { Box, Button, IconButton, Stack, TextField, Typography, useTheme } from '@mui/material'
-import React from 'react'
-import ImageUpload from '../ImageUpload'
 import { useDispatch, useSelector } from 'react-redux'
 import { addInputItem, changeForm, changeInputsList, removeInputItem } from '../../redux/reducers/universalStyles'
 
@@ -100,6 +98,21 @@ const FormInputs = ({ id }) => {
           name="description"
           value={content.description}
           onChange={handleDescriptionChange}
+          fullWidth
+        />
+      </Box>
+      {/*--------------- Terms & conidtions --------------------------- */}
+
+      <Box sx={{ mb: 1 }}>
+        <Typography variant="subtitle1">Terms & Conditions</Typography>
+        <TextField
+          placeholder="Enter terms & conditions"
+          size="small"
+          name="termsAndConditions"
+          value={content.termsAndConditions}
+          onChange={(e)=>   dispatch(
+            changeForm({ id, content: e.target.value, type: "termsAndConditions" })
+          )}
           fullWidth
         />
       </Box>

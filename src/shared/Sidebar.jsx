@@ -2,6 +2,7 @@ import { Add } from "@mui/icons-material";
 import { Box, IconButton, Stack, Typography, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { addMultiple } from "../redux/reducers/addMultiComponenet";
+import { addMultipleFromSectionState } from "../redux/reducers/sectionsState";
 import {
   addAbout,
   addBenefit,
@@ -125,7 +126,6 @@ const Sidebar = () => {
           })
         );
         break;
-
       case 'INCLUDED / NOT-INCLUDED':
         dispatch(
           addIncludedAndNotIncluded({
@@ -210,6 +210,7 @@ const Sidebar = () => {
               title: "Some title",
               buttonText: 'Click me',
               description: '[optional] Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum quas nobis saepe adipisci ratione iusto nisi voluptas dolor facere deserunt impedit eius quasi placeat non, soluta cupiditate tempore voluptates alias!',
+              termsAndConditions: '[optional] Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum quas nobis saepe adipisci ratione iusto nisi voluptas dolor facere deserunt impedit eius quasi placeat non, soluta cupiditate tempore voluptates alias!',
               inputs: [
                 {
                   labelText: "some label text",
@@ -246,7 +247,15 @@ const Sidebar = () => {
     dispatch(
       addMultiple({
         id,
-        label: "",
+        label:ele.title ==="HERO"? "Home": "",
+        title: ele.title,
+        isSelected: true,
+      })
+    );
+    dispatch(
+      addMultipleFromSectionState({
+        id,
+        label:ele.title ==="HERO"? "Home": "",
         title: ele.title,
         isSelected: true,
       })

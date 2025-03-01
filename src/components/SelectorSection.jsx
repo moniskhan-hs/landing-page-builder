@@ -17,9 +17,10 @@ import {
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import {
-  addLabel,
+  addLabelInMultiReducer,
   removeComponent,
 } from "../redux/reducers/addMultiComponenet";
+import { addLabel, removeComponentFromSection } from "../redux/reducers/sectionsState";
 import { addSelectedComponent } from "../redux/reducers/selectedComponent";
 import {
   removeAbout,
@@ -46,19 +47,21 @@ const SelectorSection = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [addLableIsActive, setAddLableIsActive] = useState(true);
-  const [labelValue, setLabelValue] = useState(oldLabelValue || "");
+  console.log('oldLabelValue:', oldLabelValue)
   const theme = useTheme();
   const dispatch = useDispatch();
 
   const handleToAddLabel = () => {
     // -------------- Need to persist the  lable of associated component
     setAddLableIsActive(true);
-    dispatch(addLabel({ title: title, labelValue: labelValue }));
+
+ 
   };
 
   const hanldeRemove = (id) => {
     console.log("deleted id------------------------------------------:", id);
     dispatch(removeComponent(id));
+    dispatch(removeComponentFromSection(id))
     switch (title) {
       case "HERO":
         dispatch(removeHero(id));
@@ -163,14 +166,15 @@ const SelectorSection = ({
             )}
 
             <Typography
-            variant="subtitle1"
+              variant="subtitle1"
               ml={1}
               sx={{
                 color: isExpanded ? theme.palette.primary.main : "#00000",
-                fontWeight: isExpanded ? "bold" : "normal",
-                textTransform:"capitalize",
-                fontSize:"0.8rem"
-                
+                fontWeight: "bold",
+                textTransform: "capitalize",
+                fontSize: "0.8rem",
+
+
               }}
             >
               {title}
@@ -178,7 +182,14 @@ const SelectorSection = ({
             {title !== "THEME" ? (
               <Typography mx={1}>/</Typography>
             ) : (
-              <Typography variant="subtitle1" mx={1}>
+              <Typography variant="subtitle1" mx={1} sx={{
+
+                background: "linear-gradient(45deg,rgb(225, 121, 16),rgb(228, 57, 102))",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                fontWeight: "bold",
+
+              }}>
                 Customize your theme
               </Typography>
             )}
@@ -190,13 +201,13 @@ const SelectorSection = ({
                     <Typography
                       variant="truncateText"
                       mx={1}
-                      title={labelValue}
+                      title={oldLabelValue}
                       sx={{
                         width: "80%",
                         textOverflow: "ellipsis",
                       }}
                     >
-                      {labelValue !== "" ? labelValue : "Add label"}
+                      {oldLabelValue !== "" ? oldLabelValue : "Add label"}
                     </Typography>
                     <IconButton onClick={() => setAddLableIsActive(false)}>
                       <Edit
@@ -212,8 +223,11 @@ const SelectorSection = ({
                     <TextField
                       placeholder="Add label"
                       variant="standard"
-                      onChange={(e) => setLabelValue(e.target.value)}
-                      value={labelValue}
+                      onChange={(e) =>{
+                        dispatch(addLabel({id, title: title, labelValue: e.target.value }));
+                        dispatch(addLabelInMultiReducer({id, title: title, labelValue: e.target.value }));
+                      }}
+                      value={oldLabelValue}
                       sx={{
                         mx: 1,
                         "& .MuiInputBase-root": {

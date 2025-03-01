@@ -35,7 +35,7 @@ const SharableContentbar = ({hanldeFullPreviewed,isFullPreviewed}) => {
         >Copy URL</Button>
 
 
-
+{/* 
         <Button variant='outlined' sx={{
             backgroundColor:'',
             // borderRadius:"8px",
@@ -43,12 +43,11 @@ const SharableContentbar = ({hanldeFullPreviewed,isFullPreviewed}) => {
             bgcolor:theme.palette.secondary.main,
             color:'#ffffff'
             
-        }} >Share URL </Button>
+        }} >Share URL </Button> */}
         <Button variant='outlined' sx={{
             backgroundColor:'',
-            // borderRadius:"8px",
             padding:"0.4rem  2rem",
-            bgcolor:theme.palette.warning.light,
+            bgcolor:theme.palette.secondary.main,
             color:'#ffffff'
             
         }} onClick={hanldeFullPreviewed} >{!isFullPreviewed ? "See Full Preview":"Hide"}</Button>

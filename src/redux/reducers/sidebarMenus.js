@@ -5,7 +5,7 @@ const initialState = [
     {
         title: "HERO",
         isSelected: false,
-        label: ''
+        label: 'Home'
 
     },
     {
@@ -72,8 +72,6 @@ export const sidebarMunuReducer = createSlice({
             const newComponent = { title: `${action.payload}`, isSelected: true, label: '' }
             state = { ...state, newComponent }
             console.log('state:', state)
-
-
 
         }
 

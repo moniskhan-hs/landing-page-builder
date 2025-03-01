@@ -6,6 +6,7 @@ import Sidebar from '../shared/Sidebar'
 
 const HomePage = () => {
     const theme = useTheme()
+    
     return (
         <div style={{
             width: '100%',
@@ -38,6 +39,8 @@ const HomePage = () => {
         // <FormSection/>
         // <AboutUsSection/>
         // <CallToActionSection/>
+        // <HeaderSection/>
+        //  <FooterSection/>
         
 
     )

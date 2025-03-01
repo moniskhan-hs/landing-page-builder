@@ -11,6 +11,9 @@ const SaveAndApplyButton = () => {
     const websiteData = useSelector((state) => state.universalThemeReducer, shallowEqual);
     const theme = useTheme();
     const sectionsPositions = useSelector((state) => state.sectionStateReducer);
+    const addmultipleReducers = useSelector((state) => state.addMultiComponentReducer);
+    console.log('addmultipleReducers:', addmultipleReducers)
+    console.log('sectionsPositions:', sectionsPositions)
 
     const dispatch = useDispatch()
 

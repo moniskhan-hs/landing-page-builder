@@ -104,3 +104,61 @@ export const ratings = [
 
 
   ]
+
+
+ export const initialState = {
+    // directly replace the theme with the object of theme of themeinputs.jsx file
+    theme: {
+      typography: {
+        titleColor: "",
+        subTitleColor: "",
+        headingColor: "",
+        paragraphColor: "",
+      },
+      button: {
+        buttonTextColor: "",
+        buttonBackground: "",
+      },
+      background: {
+        default: "",
+        paper: "",
+        section: "",
+      },
+      icon: {
+        iconColor: "",
+        iconBackground: "",
+        selectedIconType: "",
+      },
+      header:{
+        headerLogoImage:null ,
+        headerButtonText:'',
+        backgroundColor:''
+      },
+
+      footer:{
+      nameText:'',
+      copyrigthText:'',
+      backgroundColor:""
+      }
+    },
+  
+    hero: [],
+  
+    services: [],
+  
+    benefits: [],
+  
+    about: [],
+  
+    frequentlyAsked: [],
+  
+    includedNotIncluded: [],
+  
+    testimonials: [],
+  
+    callToAction: [],
+    
+    form:[],
+    
+  
+  };

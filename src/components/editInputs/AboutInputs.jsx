@@ -9,13 +9,13 @@ import { storage } from '../../firebase';
 import { addAboutItem, changeAbout, changeAboutList, changeAboutListImage, removeAboutItem } from '../../redux/reducers/universalStyles';
 import { uploadImageOnFirebaseStorageServices } from '../../utils/imageupload/firebase-storage-upload';
 
-const AboutInputs = ({id}) => {
+const AboutInputs = ({ id }) => {
   const dispatch = useDispatch();
   const theme = useTheme();
   // Get the service component from Redux by id
   const aboutsState = useSelector((state) => state.universalThemeReducer.about);
   const selectedAbout = aboutsState.find((ele) => ele.id == id);
- 
+
   if (!selectedAbout) {
     return (
       <Typography variant="h6" color="error">
@@ -34,11 +34,11 @@ const AboutInputs = ({id}) => {
     );
   };
 
- const handleAboutFieldChange = (e, index, field) => {
+  const handleAboutFieldChange = (e, index, field) => {
     dispatch(
       changeAboutList({ id, index, content: e.target.value, field })
     );
-  }; 
+  };
   // ------------------------ image upload and delete logic--------------------------------
   const handleAboutImageChange = (e, serviceId) => {
     handleFileChange(e, serviceId);
@@ -100,7 +100,7 @@ const AboutInputs = ({id}) => {
   };
 
 
- const handleAddAbout = () => {
+  const handleAddAbout = () => {
     dispatch(
       addAboutItem({
         id,
@@ -109,10 +109,10 @@ const AboutInputs = ({id}) => {
     );
   };
 
-    // --- Handler for Deleting a Service Item ---
-    const handleDeleteAbout = (index) => {
-      dispatch(removeAboutItem({ id, index }));
-    };
+  // --- Handler for Deleting a Service Item ---
+  const handleDeleteAbout = (index) => {
+    dispatch(removeAboutItem({ id, index }));
+  };
   return (
     <Stack
       gap={1}
@@ -162,7 +162,7 @@ const AboutInputs = ({id}) => {
               size="small"
               name="heading"
               value={about.heading}
-              onChange={(e) => handleAboutFieldChange(e, index,"heading")}
+              onChange={(e) => handleAboutFieldChange(e, index, "heading")}
               fullWidth
             />
           </Box>
@@ -175,87 +175,89 @@ const AboutInputs = ({id}) => {
               size="small"
               name="description"
               value={about.description}
-              onChange={(e) => handleAboutFieldChange(e, index,"description")}
+              onChange={(e) => handleAboutFieldChange(e, index, "description")}
               fullWidth
             />
           </Box>
 
-      <Box sx={{ mb: 1 }}>
-                 <Typography variant="subtitle1">Image</Typography>
-                 <Box
-                   onDragOver={(e) => e.preventDefault()}
-                   onDrop={(e) => handleAboutImageDrop(e, about.id)}
-                   sx={{     p: 1,
-                     textAlign: "center",
-                     borderRadius: "8px",
-                     "&:hover": { borderColor: "primary.main" },
-                     width: "70%",
-                     // mx: 'auto',
-                     bgcolor: '#f8f9fa',
-                     border: "2px dashed #ccc", }}
-                 >
-                   {about.image ? (
-                     <>
-                       <img
-                         src={about.image}
-                         alt="Preview"
-                         style={{
-                           maxWidth: 100,
-                           maxHeight: 100,
-                           marginBottom: 8,
-                           borderRadius: 4
-                         }}
-                       />
-                       <Button
-                         variant="outlined"
-                         color="error"
-                         onClick={() => handleDeleteImage(about.id, about.image)}
-                       >
-                         Remove Image
-                       </Button>
-                     </>
-                   ) : (
-                     <>
-       <CloudUpload sx={{
-                         color: "#6c757d",
-                         width: "3rem",
-                         height: "2rem",
-                         mx: "auto"
-                     }} />                 
-                       <Box sx={{
-                         position: "relative",
-     
-     
-                     }}>
-                         <label htmlFor={`file-upload-${about.id}`}>
-                             <Box
-                                 sx={{
-                                     // padding: "20px",
-                                     textAlign: "center",
-                                     cursor: "pointer",
-                                 }}
-                             >
-                                 <Typography variant="subtitle2" sx={{ color: "#a9a9a9" }}>
-                                     Drag file here or click to browse.
-                                 </Typography>
-                             </Box>
-                         </label>
-     
-                         <input
-                             id={`file-upload-${about.id}`}
-                             type="file"
-                             style={{
-                                 display: "none", // Hide but still clickable via label
-                             }}
-                             onChange={(e) => handleAboutImageChange(e, about.id)}
-                             accept="image/*"
-                         />
-                     </Box>
-     
-                     </>
-                   )}
-                 </Box>
-               </Box>
+          <Box sx={{ mb: 1 }}>
+            <Typography variant="subtitle1">Image</Typography>
+            <Box
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => handleAboutImageDrop(e, about.id)}
+              sx={{
+                p: 1,
+                textAlign: "center",
+                borderRadius: "8px",
+                "&:hover": { borderColor: "primary.main" },
+                width: "70%",
+                // mx: 'auto',
+                bgcolor: '#f8f9fa',
+                border: "2px dashed #ccc",
+              }}
+            >
+              {about.image ? (
+                <>
+                  <img
+                    src={about.image}
+                    alt="Preview"
+                    style={{
+                      maxWidth: 100,
+                      maxHeight: 100,
+                      marginBottom: 8,
+                      borderRadius: 4
+                    }}
+                  />
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={() => handleDeleteImage(about.id, about.image)}
+                  >
+                    Remove Image
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <CloudUpload sx={{
+                    color: "#6c757d",
+                    width: "3rem",
+                    height: "2rem",
+                    mx: "auto"
+                  }} />
+                  <Box sx={{
+                    position: "relative",
+
+
+                  }}>
+                    <label htmlFor={`file-upload-${about.id}`}>
+                      <Box
+                        sx={{
+                          // padding: "20px",
+                          textAlign: "center",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <Typography variant="subtitle2" sx={{ color: "#a9a9a9" }}>
+                          Drag file here or click to browse.
+                        </Typography>
+                      </Box>
+                    </label>
+
+                    <input
+                      id={`file-upload-${about.id}`}
+                      type="file"
+                      style={{
+                        display: "none", // Hide but still clickable via label
+                      }}
+                      onChange={(e) => handleAboutImageChange(e, about.id)}
+                      accept="image/*"
+                    />
+                  </Box>
+
+                </>
+              )}
+            </Box>
+          </Box>
         </Box>
       ))}
 
@@ -273,9 +275,9 @@ const AboutInputs = ({id}) => {
         Add About
       </Button>
     </Stack>
-  
+
   );
-  
+
 }
 
 export default AboutInputs

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import {
   Box,
   Button,
@@ -53,16 +53,6 @@ const HeroInputs = ({ id }) => {
     // Create updated content by merging with the new value
     const updatedContent = { ...content, [name]: newValue };
     dispatch(changeHero({ id, content: updatedContent }));
-  };
-
-  // File handlers
-  const handleFileUpload = (e) => {
-    handleChange(e);
-  };
-
-  const handleFileDrop = (e) => {
-    e.preventDefault();
-    handleChange(e);
   };
 
   // Toggle effect: if "image" is selected, clear embededLink; if "link", clear file.

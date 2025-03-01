@@ -46,7 +46,7 @@ const ServicesOrOfferingSection = ({id,data={},isFetchedTheme,fetchingThemeData}
       sx={{
         width: "100vw",
         padding: {md:"3rem 10rem",xs:'1rem'},
-        height: "85vh",
+        height: {md:"'auto'",xs:'auto'},
         //  ----------------------- Background value is Dynamic---
         bgcolor: isFetchedTheme ? fetchingThemeData?.background.section :selectedTheme?.background.section || theme.palette.background.section,
       }}
@@ -60,7 +60,7 @@ const ServicesOrOfferingSection = ({id,data={},isFetchedTheme,fetchingThemeData}
       </Typography>
       {/* ---------------Tile container---------- */}
 
-      <Box>
+      <Box >
         {data?.content &&
           data?.content?.services?.map((ele, index) => (
             <Stack
@@ -72,6 +72,7 @@ const ServicesOrOfferingSection = ({id,data={},isFetchedTheme,fetchingThemeData}
                 borderRadius: "12px",
                 bgcolor: isFetchedTheme? fetchingThemeData?.background.paper: selectedTheme?.background.paper || theme.palette.background.paper,
                 my: 3,
+              
              
               }}
             >
