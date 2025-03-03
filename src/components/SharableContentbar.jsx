@@ -25,8 +25,7 @@ const SharableContentbar = ({hanldeFullPreviewed,isFullPreviewed}) => {
             
 
         }}  onClick={() =>
-         
-          navigator.clipboard.writeText(`http://localhost:5173/website/${generatedWebsiteId}`)
+          navigator.clipboard.writeText(`${import.meta.env.VITE_WEBSITE_BASE_URL}/website/${generatedWebsiteId}`)
         }
         
         

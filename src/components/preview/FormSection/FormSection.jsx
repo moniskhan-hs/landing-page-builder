@@ -45,13 +45,15 @@ const FormSection = ({ data = {}, isFetchedTheme, fetchingThemeData }) => {
   return (
     <Stack
       sx={{
-        width: "100vw",
-        padding: { md: "3rem 10rem", xs: "1rem" },
+        width: isFetchedTheme? "100%":"100vw",
+        borderRadius:"12px",
+        padding: { md: isFetchedTheme?"3rem 2rem":"3rem 10rem", xs: "1rem" },
         bgcolor: isFetchedTheme
           ? fetchingThemeData?.background.section
           : selectedTheme.background.section ||
             theme.palette.background.section,
-      }}
+            mt:5,
+          }}
     >
       {/* Main content container */}
       <Box

@@ -125,8 +125,6 @@ const ImageUpload = ({ downloadURL, id, handleToSetDownloadURL,type ,index}) => 
 
                 <Box sx={{
                     position: "relative",
-
-
                 }}>
                     <label htmlFor="file-upload">
                         <Box

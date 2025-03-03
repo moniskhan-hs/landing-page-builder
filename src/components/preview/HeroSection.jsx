@@ -2,92 +2,136 @@
 import { Box, Button, Stack, Typography, useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
 import ScheduleComponent from "../ScheduleComponent";
+import { Link as ScrollLink } from "react-scroll";
 
-const HeroSection = ({ id, data = {} ,isFetchedTheme,fetchingThemeData}) => {
-  console.log('herosection id:', id)
+const HeroSection = ({
+  id,
+  data = {},
+  isFetchedTheme,
+  fetchingThemeData,
+  formID,
+}) => {
+  console.log("herosection id:", id);
   const theme = useTheme();
   const componentsValue = useSelector((state) => state.universalThemeReducer);
   const { theme: selectedTheme } = componentsValue;
-  
+
   //  const [herodata.content,setHerodata.content] = useState(data.content)
-
-    
-
-
 
   return (
     <Stack
       gap={2}
       sx={{
-        width: "100vw",
-        padding: { md: "3rem 10rem", xs: "1rem" },
+        // width: "100vw",
+        width: isFetchedTheme ? "100%" : "100vw",
+        borderRadius: "12px",
+        padding: {
+          md: isFetchedTheme ? "3rem 2rem" : "3rem 10rem",
+          xs: "1rem",
+        },
+
         height: "85vh",
         //  ----------------------- Background value is Dynamic---
-        bgcolor: isFetchedTheme ?fetchingThemeData?.background.default:selectedTheme?.background.default,
+        bgcolor: isFetchedTheme
+          ? fetchingThemeData?.background.default
+          : selectedTheme?.background.default,
         display: "flex",
         // bgcolor:"red",
-        flexDirection: { xs: "column", md: 'row' }
+        flexDirection: { xs: "column", md: "row" },
+        mt: 5,
       }}
     >
       {/* ----------------------------- Left Cotents------------------------------ */}
 
       <Stack
         sx={{
-          width: { xs: '100%', md: "50%" },
+          width: { xs: "100%", md: "50%" },
         }}
       >
         {/* ---------------------Contents Box-------------------- */}
         <Stack direction={"column"} gap={1} mt={5}>
           {/* ---------------------Title-------------------------- */}
-          <Typography variant="h2" color={ isFetchedTheme?fetchingThemeData?.typography.titleColor:selectedTheme?.typography?.titleColor}>
+          <Typography
+            variant="h2"
+            color={
+              isFetchedTheme
+                ? fetchingThemeData?.typography.titleColor
+                : selectedTheme?.typography?.titleColor
+            }
+          >
             {data?.content?.title || "Title here"}
           </Typography>
-
 
           {/* ---------------------paragraph-------------------------- */}
           <Typography
             variant="subtitle1"
-            color={isFetchedTheme ? fetchingThemeData?.typography.paragraphColor:selectedTheme?.typography?.paragraphColor}
+            color={
+              isFetchedTheme
+                ? fetchingThemeData?.typography.paragraphColor
+                : selectedTheme?.typography?.paragraphColor
+            }
           >
             {data?.content?.description ||
               "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt quisquam fugit nam sequi ex iste ratione, quaerat, architecto sit facilis maxime adipisci obcaecati suscipit amet, temporibus iusto accusantium eligendi impedit!"}
           </Typography>
 
           {/* ---------------------Button [optional]-------------------------- */}
+
           <Box>
-            <Button
-              variant="customButton"
-              sx={{
-                color: isFetchedTheme?fetchingThemeData?.button.buttonTextColor: selectedTheme?.button?.buttonTextColor,
-                bgcolor: isFetchedTheme?fetchingThemeData?.button.buttonBackground: selectedTheme?.button?.buttonBackground,
-                fontWeight: "bold",
-                width: { xs: '100%', md: '18rem' },
-                padding:"0.6rem 0rem"
-              }}
+            <ScrollLink
+              to={formID}
+              smooth={true}
+              duration={500}
+              offset={-70}
+              style={{ cursor: "pointer", textDecoration: "none" }}
             >
-              {data?.content?.buttonText || "Click me"}
-            </Button>
+              <Button
+                variant="customButton"
+                sx={{
+                  color: isFetchedTheme
+                    ? fetchingThemeData?.button.buttonTextColor
+                    : selectedTheme?.button?.buttonTextColor,
+                  bgcolor: isFetchedTheme
+                    ? fetchingThemeData?.button.buttonBackground
+                    : selectedTheme?.button?.buttonBackground,
+                  fontWeight: "bold",
+                  width: { xs: "100%", md: "18rem" },
+                  padding: "0.6rem 0rem",
+                }}
+              >
+                {data?.content?.buttonText || "Click me"}
+              </Button>
+            </ScrollLink>
           </Box>
           {/*    text [optional] */}
           <Typography
             variant="body2"
             ml={2}
             mt={1}
-            color={isFetchedTheme?fetchingThemeData?.typography.paragraphColor: selectedTheme?.typography?.paragraphColor}
+            color={
+              isFetchedTheme
+                ? fetchingThemeData?.typography.paragraphColor
+                : selectedTheme?.typography?.paragraphColor
+            }
           >
             {data?.content?.infoText || "some info text here..."}
           </Typography>
 
-          <Box sx={{
-            padding: "1rem 1.5rem"
-          }}>
-
-            {
-              data?.content?.scheduleAdded && <ScheduleComponent iconBackground={selectedTheme?.icon?.iconBackground} iconColor={selectedTheme?.icon?.iconColor} paperColor={selectedTheme?.background?.paper} iconType={selectedTheme?.icon?.selectedIconType} data={data?.content?.scheduleData} />
-            }
+          <Box
+            sx={{
+              padding: "1rem 1.5rem",
+            }}
+          >
+            {data?.content?.scheduleAdded && (
+              <ScheduleComponent
+                iconBackground={selectedTheme?.icon?.iconBackground}
+                iconColor={selectedTheme?.icon?.iconColor}
+                paperColor={selectedTheme?.background?.paper}
+                iconType={selectedTheme?.icon?.selectedIconType}
+                data={data?.content?.scheduleData}
+              />
+            )}
           </Box>
-
-
         </Stack>
       </Stack>
 
@@ -96,9 +140,8 @@ const HeroSection = ({ id, data = {} ,isFetchedTheme,fetchingThemeData}) => {
       <Stack
         variant="center"
         sx={{
-          width: { xs: '100%', md: "50%" },
-          // bgcolor:'red',
-          height: { xs: "100%" }
+          width: { xs: "100%", md: "50%" },
+          height: { xs: "100%" },
         }}
       >
         {/* ------------------- Image or Embedded-------------------- */}
