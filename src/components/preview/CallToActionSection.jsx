@@ -11,7 +11,6 @@ const CallToActionSection = ({
   const componentsValue = useSelector((state) => state.universalThemeReducer);
   const { theme: selectedTheme } = componentsValue;
   const theme = useTheme();
-  console.log("formID", formID);
   return (
     <Stack
       sx={{
