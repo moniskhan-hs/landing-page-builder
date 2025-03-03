@@ -150,7 +150,7 @@ const FormSection = ({ data = {}, isFetchedTheme, fetchingThemeData }) => {
               display: "flex",
               alignItems: "center",
               position: "relative",
-              mt: 5,
+              mt: 5
             }}
           >
             <Checkbox
@@ -160,10 +160,11 @@ const FormSection = ({ data = {}, isFetchedTheme, fetchingThemeData }) => {
               sx={{
                 position: "absolute",
                 left: "-2%",
+                bottom:{xs:'30%',md:'-30%'}
                 // bottom:"50%"
               }}
             />
-            <Stack direction={'row'} gap={1} marginLeft={{ md: 3, xs: 5 }}>
+            <Stack direction={'row'} marginLeft={{ md: 5, xs: 5 }}>
               <Typography
                 variant="subtitle1"
                 fontWeight={600}
@@ -174,12 +175,13 @@ const FormSection = ({ data = {}, isFetchedTheme, fetchingThemeData }) => {
                 }
               >
                 I agree and accept the{" "}
+                <span style={{
+                  cursor:"pointer",
+                  color:"#4095bf"
+                }} onClick ={()=>setIsOpen(true)}>
+                  terms and conditions
+                </span>
               </Typography>
-                <Typography sx={{
-                  cursor:"pointer"
-                }} color="#4095bf" onClick ={()=>setIsOpen(true)}>
-                  term and conditions
-                </Typography>
             </Stack>
           </Box>
 
