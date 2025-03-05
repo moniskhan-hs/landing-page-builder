@@ -89,10 +89,10 @@ const FooterInputs = ({ theme }) => {
 
         {/* Copyright text Field */}
         <Box>
-          <Typography variant="subtitle1">Copyrigth text</Typography>
+          <Typography variant="subtitle1">Copyright text</Typography>
           <TextField
             name="copyrigth"
-            placeholder="Enter copyrigth text"
+            placeholder="Enter copy right text"
             size="small"
             value={selectedTheme?.theme?.footer?.copyrigthText}
             onChange={(e) =>

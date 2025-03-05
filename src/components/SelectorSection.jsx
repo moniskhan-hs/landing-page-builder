@@ -15,7 +15,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   addLabelInMultiReducer,
   removeComponent,
@@ -34,6 +34,7 @@ import {
   removeTestimonials,
 } from "../redux/reducers/universalStyles";
 import { componentsInputs } from "../utils/constants";
+import { setExpandedBoxId } from "../redux/reducers/boxExpander";
 
 const SelectorSection = ({
   id,
@@ -44,12 +45,15 @@ const SelectorSection = ({
   handleDrop,
   isDragged,
   index,
+  
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const dispatch = useDispatch();
+  const {expandedBoxId} = useSelector((state) => state.boxExpandReducer);
+  const isExpanded = expandedBoxId === id;
   const [addLableIsActive, setAddLableIsActive] = useState(true);
   console.log('oldLabelValue:', oldLabelValue)
   const theme = useTheme();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const handleToAddLabel = () => {
     // -------------- Need to persist the  lable of associated component
@@ -263,7 +267,13 @@ const SelectorSection = ({
             sx={{
               color: theme.palette.primary.main,
             }}
-            onClick={() => setIsExpanded((pre) => !pre)}
+            onClick={() => {
+              if (expandedBoxId === id) {
+                dispatch(setExpandedBoxId(null));
+              } else {
+                dispatch(setExpandedBoxId(id));
+              }
+            }}
           >
             <OpenInFull />
           </IconButton>

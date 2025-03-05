@@ -170,13 +170,21 @@ const AboutInputs = ({ id }) => {
           {/* Service Description */}
           <Box sx={{ mb: 1 }}>
             <Typography variant="subtitle1">Description</Typography>
-            <TextField
+            <textarea
               placeholder="Enter Description"
               size="small"
               name="description"
               value={about.description}
               onChange={(e) => handleAboutFieldChange(e, index, "description")}
-              fullWidth
+              style={{
+                background: "transparent",
+                borderRadius: "8px",
+                padding: "0.5rem 0.6rem",
+                fontSize: "1rem",
+                maxWidth:'100%',
+                minHeight:"15rem",
+                minWidth:"99%"
+              }}
             />
           </Box>
 

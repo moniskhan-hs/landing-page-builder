@@ -26,6 +26,8 @@ const PlayGround = () => {
     dispatch(changeInMultiState(updatedSelected));
   }, [menuItemsState, dispatch]);
   // }, [dispatch]);
+  const [isExpanded, setIsExpanded] = useState(false);
+
 
 
   const [draggedIndex, setDraggedIndex] = useState(null);
@@ -58,6 +60,10 @@ const PlayGround = () => {
 
   };
 
+  // const handleExpandInAndOut = ()=>{
+  //   console.log('handel is expand out')
+  //   setIsExpanded((pre) => !pre)
+  // }
 
 
 

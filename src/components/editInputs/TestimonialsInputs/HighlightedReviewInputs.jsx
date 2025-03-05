@@ -114,13 +114,20 @@ const HighlightedReviewInputs = ({ id, theme, content }) => {
       {/* -----address------ */}
       <Box sx={{ mb: 1 }}>
         <Typography variant="subtitle1">Address</Typography>
-        <TextField
+        <textarea
           placeholder="Enter Address"
-          size="small"
           name="address"
           value={content.address}
           onChange={(e) => handleChange(e.target.value, "highlightedAddress")}
-          fullWidth
+          style={{
+            background: "transparent",
+            borderRadius: "8px",
+            padding: "0.5rem 0.6rem",
+            fontSize: "1rem",
+            maxWidth:'100%',
+            minHeight:"10rem",
+            minWidth:"99%"
+          }}
         />
       </Box>
 
@@ -140,13 +147,20 @@ const HighlightedReviewInputs = ({ id, theme, content }) => {
       {/* user Description */}
       <Box sx={{ mb: 1 }}>
         <Typography variant="subtitle1">Description</Typography>
-        <TextField
+        <textarea
           placeholder="Enter Description"
-          size="small"
           name="description"
           value={content.description}
           onChange={(e) => handleChange(e.target.value, "highlightedDescription")}
-          fullWidth
+          style={{
+            background: "transparent",
+            borderRadius: "8px",
+            padding: "0.5rem 0.6rem",
+            fontSize: "1rem",
+            maxWidth:'100%',
+            minHeight:"10rem",
+            minWidth:"99%"
+          }}
         />
       </Box>
 

@@ -157,6 +157,9 @@ const HeroInputs = ({ id }) => {
                 borderRadius: "8px",
                 padding: "0.5rem 0.6rem",
                 fontSize: "1rem",
+                maxWidth:'100%',
+                minHeight:"10rem",
+                minWidth:"99%"
               }}
             />
           </Box>

@@ -243,26 +243,42 @@ const FAQsInputs = ({ id }) => {
           {/* Question Field */}
           <Box sx={{ mb: 1 }}>
             <Typography variant="subtitle1">Question</Typography>
-            <TextField
+            <textarea
               placeholder="Enter Question"
               size="small"
               name="question"
               value={faq.question}
               onChange={(e) => handleFAQFieldChange(e, index, "question")}
-              fullWidth
+              style={{
+                background: "transparent",
+                borderRadius: "8px",
+                padding: "0.5rem 0.6rem",
+                fontSize: "1rem",
+                maxWidth:'100%',
+                minHeight:"15rem",
+                minWidth:"99%"
+              }}
             />
           </Box>
 
           {/* Answer Field */}
           <Box sx={{ mb: 1 }}>
             <Typography variant="subtitle1">Answer</Typography>
-            <TextField
+            <textarea
               placeholder="Enter Answer"
               size="small"
               name="answer"
               value={faq.answer}
               onChange={(e) => handleFAQFieldChange(e, index, "answer")}
-              fullWidth
+              style={{
+                background: "transparent",
+                borderRadius: "8px",
+                padding: "0.5rem 0.6rem",
+                fontSize: "1rem",
+                maxWidth:'100%',
+                minHeight:"15rem",
+                minWidth:"99%"
+              }}
             />
           </Box>
         </Box>

@@ -209,7 +209,7 @@ const NotIncludedOrIncludedInputs = ({ id }) => {
           {/* Description Field */}
           <Box sx={{ mb: 1 }}>
             <Typography variant="subtitle1">Description</Typography>
-            <TextField
+            <textarea
               placeholder="Enter Description"
               size="small"
               name="description"
@@ -217,7 +217,15 @@ const NotIncludedOrIncludedInputs = ({ id }) => {
               onChange={(e) =>
                 handleIncludedAndNotIncludedFieldChange(e, index, "description")
               }
-              fullWidth
+              style={{
+                background: "transparent",
+                borderRadius: "8px",
+                padding: "0.5rem 0.6rem",
+                fontSize: "1rem",
+                maxWidth:'100%',
+                minHeight:"10rem",
+                minWidth:"99%"
+              }}
             />
           </Box>
 

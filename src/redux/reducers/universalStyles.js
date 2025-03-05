@@ -661,13 +661,94 @@ export const universalThemeReducer = createSlice({
           formComp.content.description = content
         }else if (type === 'termsAndConditions'){
           formComp.content.termsAndConditions = content
+        } else if (type === 'radioTitle'){
+          formComp.content.radioTitle = content
+        } else if (type ==='radioDirection' ){
+          formComp.content.radioDirection = content
+        } else if (type === 'checkboxesTitle'){
+          formComp.content.checkboxesTitle = content
+        } else if (type === 'checkboxesDirection'){
+          formComp.content.checkboxesDirection = content
         }
       }
     },
 
 
+    addRadioButton: (state, action) => {
+      const { id, radio } = action.payload;
+      const inputComp = state.form.find((ele) => ele.id === id);
+      if (
+        inputComp &&
+        inputComp.content &&
+        Array.isArray(inputComp.content.radioButtons)
+      ) {
+        // Assign a unique id to the new service if not provided
+        radio.id = radio.id || Date.now();
+        inputComp.content.radioButtons.push(radio);
+      }
+    },
 
+    changeRadioButtonsList : (state,action)=>{
+      const {id,index,content} = action.payload
+      const inputComp = state.form.find((ele) => ele.id === id);
+      if (
+        inputComp &&
+        inputComp.content &&
+        Array.isArray(inputComp.content.radioButtons)
+      ) {
+        inputComp.content.radioButtons[index].label = content;
+      }
+  
+      },
+    removeRadioButton: (state, action) => {
+      const { id, index } = action.payload;
+      const inputComp = state.form.find((ele) => ele.id === id);
+      if (
+        inputComp &&
+        inputComp.content &&
+        Array.isArray(inputComp.content.radioButtons)
+      ) {
+        inputComp.content.radioButtons.splice(index, 1);
+      }
+    },
 
+    addCheckbox: (state, action) => {
+      const { id, check } = action.payload;
+      const inputComp = state.form.find((ele) => ele.id === id);
+      if (
+        inputComp &&
+        inputComp.content &&
+        Array.isArray(inputComp.content.multiChecked)
+      ) {
+        // Assign a unique id to the new service if not provided
+        check.id = check.id || Date.now();
+        inputComp.content.multiChecked.push(check);
+      }
+    },
+
+    removeCheckbox: (state, action) => {
+      const { id, index } = action.payload;
+      const inputComp = state.form.find((ele) => ele.id === id);
+      if (
+        inputComp &&
+        inputComp.content &&
+        Array.isArray(inputComp.content.multiChecked)
+      ) {
+        inputComp.content.multiChecked.splice(index, 1);
+      }
+    },
+    changeCheckboxList : (state,action)=>{
+      const {id,index,content} = action.payload
+      const inputComp = state.form.find((ele) => ele.id === id);
+      if (
+        inputComp &&
+        inputComp.content &&
+        Array.isArray(inputComp.content.multiChecked)
+      ) {
+        inputComp.content.multiChecked[index].label = content;
+      }
+  
+      },
 
   },
 });
@@ -676,6 +757,6 @@ export const {changeTheme,changeHeaderAndFooter,addHero,changeHero,setHeroImage,
   removeAbout,changeAboutList,addAboutItem,removeAboutItem,changeAboutListImage,addFAQ,removeFAQ,removeFAQItem,addFAQItem,changeFAQList,changeFAQ,addIncludedAndNotIncluded,removeIncludedNotIncluded,changeIncludedNotIncluded,changeIncludedNotIncludedList,changeListImage,addIncludesItem,removeIncludeItem,
   changeTestimonials, removeTestimonialItem, addTestimonialItem, changeTestimonialsList, removeTestimonials, addTestimonials,changeTestimonialListImage,
   addCallToAction,addCallToActionItem,changeCallToAction,changeCallToActionList,removeCallToAction,removeCallToActionItem,
-  addForm, removeForm,changeForm,changeInputsList,addInputItem,removeInputItem
+  addForm, removeForm,changeForm,changeInputsList,addInputItem,removeInputItem,addRadioButton,removeRadioButton,changeRadioButtonsList,changeCheckboxList,removeCheckbox,addCheckbox
 
 } = universalThemeReducer.actions;

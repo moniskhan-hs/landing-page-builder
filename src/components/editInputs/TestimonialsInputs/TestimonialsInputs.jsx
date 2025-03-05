@@ -234,19 +234,26 @@ const TestimonialsInputs = ({ id }) => {
           {/* user Description */}
           <Box sx={{ mb: 1 }}>
             <Typography variant="subtitle1">Description</Typography>
-            <TextField
+            <textarea
               placeholder="Enter Description"
-              size="small"
               name="description"
               value={user.description}
               onChange={(e) =>
                 handleTestimonialsFieldChange(e, index, "description")
               }
-              fullWidth
+              style={{
+                background: "transparent",
+                borderRadius: "8px",
+                padding: "0.5rem 0.6rem",
+                fontSize: "1rem",
+                maxWidth:'100%',
+                minHeight:"15rem",
+                minWidth:"99%"
+              }}
             />
           </Box>
 
-          {/* Image Upload for Service */}
+          {/* Image Upload of user */}
           <Box sx={{ mb: 1 }}>
             <Typography variant="subtitle1">Image</Typography>
             <Box

@@ -38,13 +38,11 @@ const Sidebar = () => {
               scheduleAdded: false,
               scheduleData: [
                 {
-                  labelText: 'eg, TIME',
-                  infoText: '03:15 PM',
-                  image: null          // icon in future
-
-                }
-
-              ]
+                  labelText: "eg, TIME",
+                  infoText: "03:15 PM",
+                  image: null, // icon in future
+                },
+              ],
             },
           })
         );
@@ -61,7 +59,7 @@ const Sidebar = () => {
                   description:
                     "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex sequi veniam nemo corporis maxime! Labore nesciunt adipisci perferendis, sed rem nemo dicta earum, sint, provident explicabo quo sunt eius eligendi.",
                   image: null,
-                  id:123654789
+                  id: 123654789,
                 },
               ],
             },
@@ -80,7 +78,7 @@ const Sidebar = () => {
                   infoText:
                     "some informations text Lorem ipsum dolor sit amet consectetur",
                   image: null,
-                  id:44444444
+                  id: 44444444,
                 },
               ],
             },
@@ -96,19 +94,18 @@ const Sidebar = () => {
               title: "",
               abouts: [
                 {
-
                   heading: "some heading",
                   description:
                     "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex sequi veniam nemo corporis maxime! Labore nesciunt adipisci perferendis, sed rem nemo dicta earum, sint, provident explicabo quo sunt eius eligendi.",
                   image: null,
-                  id:66666666
+                  id: 66666666,
                 },
               ],
             },
           })
         );
         break;
-      case 'FAQ':
+      case "FAQ":
         dispatch(
           addFAQ({
             id,
@@ -126,20 +123,20 @@ const Sidebar = () => {
           })
         );
         break;
-      case 'INCLUDED / NOT-INCLUDED':
+      case "INCLUDED / NOT-INCLUDED":
         dispatch(
           addIncludedAndNotIncluded({
             id,
             content: {
               title: "Some title",
-              infoText: 'some information text here',
+              infoText: "some information text here",
               includes: [
                 {
                   heading: "some question",
                   description:
                     "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex sequi veniam nemo corporis maxime! Labore nesciunt adipisci perferendis, sed rem nemo dicta earum, sint, provident explicabo quo sunt eius eligendi.",
                   image: null,
-                  id:55555555
+                  id: 55555555,
                 },
               ],
             },
@@ -152,10 +149,10 @@ const Sidebar = () => {
             id,
             content: {
               title: "Some title",
-              infoText: 'some information text here',
+              infoText: "some information text here",
               highlightedReview: {
                 name: "John wick",
-                address: 'New York, US',
+                address: "New York, US",
                 description:
                   "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex sequi veniam nemo corporis maxime! Labore nesciunt adipisci perferendis, sed rem nemo dicta earum, sint, provident explicabo quo sunt eius eligendi.",
                 image: null,
@@ -165,12 +162,12 @@ const Sidebar = () => {
               users: [
                 {
                   name: "some question",
-                  address: 'New York, US',
+                  address: "New York, US",
                   description:
                     "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex sequi veniam nemo corporis maxime! Labore nesciunt adipisci perferendis, sed rem nemo dicta earum, sint, provident explicabo quo sunt eius eligendi.",
                   image: null,
                   ratingValue: 4,
-                  id:33333333
+                  id: 33333333,
                 },
               ],
             },
@@ -189,15 +186,14 @@ const Sidebar = () => {
                   // icon : icon Name - [in future]
                 },
               ],
-              buttonText: '',
+              buttonText: "",
               advantages: [
                 {
                   text: "some advantage provided",
                   // icon : icon Name - [in future]
                 },
               ],
-              infoText: 'some information text here',
-
+              infoText: "some information text here",
             },
           })
         );
@@ -208,22 +204,50 @@ const Sidebar = () => {
             id,
             content: {
               title: "Some title",
-              buttonText: 'Click me',
-              description: '[optional] Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum quas nobis saepe adipisci ratione iusto nisi voluptas dolor facere deserunt impedit eius quasi placeat non, soluta cupiditate tempore voluptates alias!',
-              termsAndConditions: '[optional] Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum quas nobis saepe adipisci ratione iusto nisi voluptas dolor facere deserunt impedit eius quasi placeat non, soluta cupiditate tempore voluptates alias!',
-              inputs: [
+              buttonText: "Click me",
+              description:
+                "[optional] Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum quas nobis saepe adipisci ratione iusto nisi voluptas dolor facere deserunt impedit eius quasi placeat non, soluta cupiditate tempore voluptates alias!",
+              termsAndConditions:
+                "[optional] Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum quas nobis saepe adipisci ratione iusto nisi voluptas dolor facere deserunt impedit eius quasi placeat non, soluta cupiditate tempore voluptates alias!",
+               
+              radioTitle:'eg, Please choose your gender',
+              radioDirection:"row",
+              checkboxesTitle:'eg, Please Choose one or more"',
+              checkboxesDirection:"row",
+                inputs: [
                 {
                   labelText: "some label text",
                   placeholderText: "place holder text.....",
+                  type: "text", // selection box
+                  makeItFull:false // boolean
+              
                 },
               ],
+              radioButtons: [
+                {
+                  label: "Male",
+                },
+                {
+                  label: "Female",
+                },
+              ],
+
+              multiChecked:[
+                {
+                  label: "Select 1",
+                },
+                {
+                  label: "Select 2",
+                },
+              ]
+
+
+
+
             },
           })
         );
         break;
-
-
-
 
       default:
         dispatch(
@@ -247,7 +271,7 @@ const Sidebar = () => {
     dispatch(
       addMultiple({
         id,
-        label:ele.title ==="HERO"? "Home": "",
+        label: ele.title === "HERO" ? "Home" : "",
         title: ele.title,
         isSelected: true,
       })
@@ -255,7 +279,7 @@ const Sidebar = () => {
     dispatch(
       addMultipleFromSectionState({
         id,
-        label:ele.title ==="HERO"? "Home": "",
+        label: ele.title === "HERO" ? "Home" : "",
         title: ele.title,
         isSelected: true,
       })

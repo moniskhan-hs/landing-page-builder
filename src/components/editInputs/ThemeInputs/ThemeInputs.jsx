@@ -91,7 +91,6 @@ const ThemeInputs = () => {
         display: 'flex',
         flexDirection: 'column',
         gap: 1,
-
       }
     }}>
 

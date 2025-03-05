@@ -3,10 +3,12 @@ import {
   Box,
   Button,
   Checkbox,
+  Grid,
+  Radio,
   Stack,
   TextField,
   Typography,
-  useTheme
+  useTheme,
 } from "@mui/material";
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -17,43 +19,43 @@ const FormSection = ({ data = {}, isFetchedTheme, fetchingThemeData }) => {
   const componentsValue = useSelector((state) => state.universalThemeReducer);
   const { theme: selectedTheme } = componentsValue;
   const [checked, setChecked] = useState(true);
-  const [isOpen,setIsOpen]= useState(false)
-
+  const [isOpen, setIsOpen] = useState(false);
+  const [radioValue, setValueRadio] = useState("");
+  const [checkedValues, setCheckedValues] = useState([]);
   const handleChange = (event) => {
     setChecked(event.target.checked);
   };
 
-  // Helper function to chunk the array into groups of 2
-  const chunkArray = (array, size) => {
-    const chunks = [];
-    for (let i = 0; i < array.length; i += size) {
-      chunks.push(array.slice(i, i + size));
-    }
-    return chunks;
+
+  const handleChangeRadio = (event) => {
+    const value = event.target.value;
+    setValueRadio(value);
   };
 
-  const chunkedItems = chunkArray(data?.content?.inputs, 2);
-
-  // const handleClose = () => {
-  //   onClose(selectedValue);
-  // };
-
-  // const handleListItemClick = (value: string) => {
-  //   onClose(value);
-  // };
-
+  const handleChangeCheckbox = (event, label) => {
+    if (event.target.checked) {
+      // Add the label to the array
+      setCheckedValues((prev) => [...prev, label]);
+    } else {
+      // Remove the label from the array
+      setCheckedValues((prev) => prev.filter((val) => val !== label));
+    }
+  };
   return (
     <Stack
       sx={{
-        width: isFetchedTheme? "100%":"100vw",
-        borderRadius:"12px",
-        padding: { md: isFetchedTheme?"3rem 2rem":"3rem 10rem", xs: "1rem" },
+        width: isFetchedTheme ? "100%" : "100vw",
+        borderRadius: "12px",
+        padding: {
+          md: isFetchedTheme ? "3rem 2rem" : "3rem 10rem",
+          xs: "1rem",
+        },
         bgcolor: isFetchedTheme
           ? fetchingThemeData?.background.section
           : selectedTheme.background.section ||
             theme.palette.background.section,
-            mt:5,
-          }}
+        mt: 5,
+      }}
     >
       {/* Main content container */}
       <Box
@@ -85,50 +87,86 @@ const FormSection = ({ data = {}, isFetchedTheme, fetchingThemeData }) => {
 
         <form>
           {/* Render text fields two per row */}
-          {chunkedItems?.map((chunk, index) => (
-            <Stack
-              key={index}
-              direction={{ md: "row", xs: "column" }}
-              spacing={2}
-              my={3}
-            >
-              {chunk.map((field, idx) => (
-                <Stack
-                  key={field.id || idx}
-                  gap={1}
-                  sx={{
-                    flex: chunk.length === 1 ? 1 : "initial",
-                    width: "100%",
-                  }}
-                >
-                  <Typography variant="subtitle2" ml={"0.2rem"}>
-                    {field.labelText}
-                  </Typography>
-                  <TextField
-                    placeholder={field.placeholderText}
-                    fullWidth
-                    size="small"
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: "30px",
-                        border: `1px solid ${theme.palette.primary.main}`,
-                        "& .MuiOutlinedInput-root:hover": {
-                          border: "none",
+
+          <Box sx={{ flexGrow: 1,mb:4 }} >
+            <Grid container spacing={2}>
+              {data?.content?.inputs.map((field, idx) => (
+                <Grid item xs={field.makeItFull==true?12:6}  key={field.id || idx}>
+                  <Stack gap={1}>
+                    <Typography variant="subtitle2" ml={"0.2rem"}>
+                      {field.labelText}
+                    </Typography>
+                    <TextField
+                      placeholder={field.placeholderText}
+                      fullWidth
+                      size="small"
+                      type={field.type}
+                      sx={{
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: "30px",
+                          border: `1px solid ${theme.palette.primary.main}`,
+                          "&:hover .MuiOutlinedInput-notchedOutline": {
+                            border: "none",
+                          },
+                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            border: "none",
+                          },
                         },
-                        "&:hover .MuiOutlinedInput-notchedOutline": {
-                          border: "none",
-                        },
-                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                          border: "none",
-                        },
-                      },
-                      // If only one field in the row, let it grow to fill the row.
-                    }}
-                  />
-                </Stack>
+                      }}
+                    />
+                  </Stack>
+                </Grid>
               ))}
-            </Stack>
-          ))}
+            </Grid>
+          </Box>
+          {/* {chunk.map((field, idx) => (
+            
+          ))} */}
+          {/* ----------------------------------------- Radio buttons----------------------------------- */}
+          <Typography variant="subtitle2" ml={"0.2rem"}>
+            {data?.content?.radioTitle || "Choose a gender"}
+          </Typography>
+          {/* ----------------------- Direction should be dynamic---------------------------- */}
+          <Stack direction={data?.content?.radioDirection} mb={3}>
+            {data?.content?.radioButtons?.map((ele, index) => (
+              <Stack
+                direction={"row"}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                }}
+                key={ele.id || index}
+              >
+                <Radio
+                  value={ele.label}
+                  checked={radioValue === ele.label}
+                  onChange={handleChangeRadio}
+                />
+                <Typography variant="subtitle1">{ele.label}</Typography>
+              </Stack>
+            ))}
+          </Stack>
+          {/* ----------------------------------------- Checkbox----------------------------------- */}
+          <Typography variant="subtitle2" ml={"0.2rem"}>
+            {data?.content?.checkboxesTitle || "Choose one or more"}
+          </Typography>
+          {/* ----------------------- Direction should be dynamic---------------------------- */}
+          <Stack direction={data?.content?.checkboxesDirection} mb={3}>
+            {data?.content?.multiChecked?.map((ele, index) => (
+              <Stack
+                direction="row"
+                sx={{ display: "flex", alignItems: "center" }}
+                key={ele.id || index}
+              >
+                <Checkbox
+                  checked={checkedValues.includes(ele.label)}
+                  onChange={(event) => handleChangeCheckbox(event, ele.label)}
+                  inputProps={{ "aria-label": "controlled" }}
+                />
+                <Typography variant="subtitle1">{ele.label}</Typography>
+              </Stack>
+            ))}
+          </Stack>
 
           {/* Term and Conditions */}
           <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -150,7 +188,7 @@ const FormSection = ({ data = {}, isFetchedTheme, fetchingThemeData }) => {
               display: "flex",
               alignItems: "center",
               position: "relative",
-              mt: 5
+              mt: 5,
             }}
           >
             <Checkbox
@@ -160,11 +198,11 @@ const FormSection = ({ data = {}, isFetchedTheme, fetchingThemeData }) => {
               sx={{
                 position: "absolute",
                 left: "-2%",
-                bottom:{xs:'30%',md:'-30%'}
+                bottom: { xs: "30%", md: "-30%" },
                 // bottom:"50%"
               }}
             />
-            <Stack direction={'row'} marginLeft={{ md: 5, xs: 5 }}>
+            <Stack direction={"row"} marginLeft={{ md: 5, xs: 5 }}>
               <Typography
                 variant="subtitle1"
                 fontWeight={600}
@@ -175,10 +213,13 @@ const FormSection = ({ data = {}, isFetchedTheme, fetchingThemeData }) => {
                 }
               >
                 I agree and accept the{" "}
-                <span style={{
-                  cursor:"pointer",
-                  color:"#4095bf"
-                }} onClick ={()=>setIsOpen(true)}>
+                <span
+                  style={{
+                    cursor: "pointer",
+                    color: "#4095bf",
+                  }}
+                  onClick={() => setIsOpen(true)}
+                >
                   terms and conditions
                 </span>
               </Typography>
@@ -206,9 +247,11 @@ const FormSection = ({ data = {}, isFetchedTheme, fetchingThemeData }) => {
         </form>
       </Box>
 
-
-
-      <FormTermAndPrivacyDialog isOpen ={isOpen}  setIsOpen={setIsOpen} termsAndConditions ={data.content.termsAndConditions}/>
+      <FormTermAndPrivacyDialog
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        termsAndConditions={data.content.termsAndConditions}
+      />
     </Stack>
   );
 };
