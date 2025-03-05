@@ -108,7 +108,6 @@ const SelectorSection = ({
   useEffect(() => {
     if (isExpanded && title !== "THEME") {
       dispatch(addSelectedComponent({ id, name: title }));
-      console.log('title:', title)
     }
   }, [isExpanded, title, dispatch, id]);
 
@@ -181,7 +180,7 @@ const SelectorSection = ({
 
               }}
             >
-              {title}
+              {title === 'THEME'?'':title} 
             </Typography>
             {title !== "THEME" ? (
               <Typography mx={1}>/</Typography>
